@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -63,7 +64,7 @@ public class OIDCUtils
     }
 
     public ClaimSetMapper parseClaims( final String idToken, final String issuer, final String clientID, final String nonce,
-                                       final String idProviderName )
+                                       final String idProviderName, final String[] allowedTenants )
         throws Exception
     {
         final DecodedJWT decodedJWT = JWT.decode( idToken );
@@ -86,7 +87,15 @@ public class OIDCUtils
             verification = JWT.require( Algorithm.none() );
         }
 
-        final JWTVerifier verifier = verification.withIssuer( issuer )
+        final String tid = decodedJWT.getClaim( "tid" ).asString();
+        if ( allowedTenants != null && allowedTenants.length > 0 && Arrays.stream( allowedTenants ).noneMatch( p -> p.equals( tid ) ) )
+        {
+            throw new IllegalStateException( "Invalid TenantId: " + tid );
+        }
+
+        final String resolvedIssuer = issuer.contains( "{tenantid}" ) ? issuer.replace( "{tenantid}", tid ) : issuer;
+
+        final JWTVerifier verifier = verification.withIssuer( resolvedIssuer )
             .withAudience( clientID )
             .withClaim( "nonce", nonce )
             .acceptLeeway( 1 ) // 1 sec for nbf and iat
