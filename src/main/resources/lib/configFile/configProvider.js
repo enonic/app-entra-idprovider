@@ -68,7 +68,8 @@ exports.getIdProviderConfig = function (idProviderName) {
             GROUP_FILTER
         ),
         pageSize: rawIdProviderConfig[`${idProviderKeyBase}.pageSize`] || null,
-        groupPrefix: rawIdProviderConfig[`${idProviderKeyBase}.groupPrefix`] || 'azure-ad-' 
+        groupPrefix: rawIdProviderConfig[`${idProviderKeyBase}.groupPrefix`] || 'azure-ad-',
+        allowedTenants: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.allowedTenants`]),
     };
 
     if (hasProperty(rawIdProviderConfig, idProviderKeyBase, 'endSession')) {

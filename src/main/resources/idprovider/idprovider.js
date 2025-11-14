@@ -91,7 +91,8 @@ function handleAuthenticationResponse(req) {
         redirectUri: context.redirectUri,
         nonce: context.nonce,
         codeVerifier: context.codeVerifier,
-        code: code
+        code: code,
+        allowedTenants: idProviderConfig.allowedTenants,
     });
 
     checkClaimUsername(idToken.claims, idProviderConfig.claimUsername);
