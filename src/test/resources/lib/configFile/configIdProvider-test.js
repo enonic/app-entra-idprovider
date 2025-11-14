@@ -68,6 +68,11 @@ exports.testValidConfig = () => {
 
                 'idprovider.myidp.userEventPrefix': 'azure',
                 'idprovider.myidp.userEventMode': 'distributed',
+                'idprovider.myidp.groupFilter.0.groupProperty' : 'id',
+                'idprovider.myidp.groupFilter.0.regexp' : 'tid1',
+                'idprovider.myidp.groupFilter.0.and': 'false',
+                'idprovider.myidp.pageSize': '10',
+                'idprovider.myidp.allowedTenants': 'tenant1 tenant2',
             }
         }
     });
@@ -111,6 +116,10 @@ exports.testValidConfig = () => {
 
     test.assertEquals('azure', config.userEventPrefix);
     test.assertEquals('distributed', config.userEventMode);
+    test.assertJsonEquals([{groupProperty: 'id', regexp: 'tid1', and: 'false'}], config.groupFilter);
+    test.assertTrue(config.createAndUpdateGroupsOnLoginFromGraphApi);
+    test.assertEquals('azure-ad-', config.groupPrefix);
+    test.assertJsonEquals(['tenant1', 'tenant2'], config.allowedTenants);
 };
 
 exports.testDefaultConfigWithRequiredOptions = () => {
@@ -161,6 +170,12 @@ exports.testDefaultConfigWithRequiredOptions = () => {
     test.assertFalse(config.autoLogin.createSession);
     test.assertFalse(config.autoLogin.wsHeader);
     test.assertJsonEquals([], config.autoLogin.allowedAudience);
+
+    test.assertJsonEquals([], config.groupFilter);
+    test.assertNull(config.pageSize);
+    test.assertTrue(config.createAndUpdateGroupsOnLoginFromGraphApi);
+    test.assertEquals('azure-ad-', config.groupPrefix);
+    test.assertJsonEquals([], config.allowedTenants);
 };
 
 exports.testValidateRequiredOptions = () => {
