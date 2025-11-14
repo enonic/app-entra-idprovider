@@ -44,7 +44,6 @@ exports.initUserStores = function() {
                 idProviderConfig: {
                     description: description,
                     applicationKey: app.name,
-                    config: [], // Skipping the node-level config entirely; we're going to use the .cfg anyway (although this causes invalid config fields when viewing it in the user manager)
                 },
                 permissions: [],
             });

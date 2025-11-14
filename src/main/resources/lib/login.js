@@ -5,6 +5,7 @@ const commonLib = require('/lib/xp/common');
 const portalLib = require('/lib/xp/portal');
 const preconditions = require('/lib/preconditions');
 const oidcLib = require('./oidc');
+const eventLib = require('/lib/xp/event');
 const groupLib = require("/lib/group");
 
 const regExp = /\$\{([^\}]+)\}/g;
@@ -119,6 +120,9 @@ function doLogin(idProviderConfig, userName, isAutoLogin) {
     const loginResult = authLib.login(loginParams);
     if (loginResult.authenticated) {
         log.debug(`Logged in user [${principalKey}]`);
+        if (!isAutoLogin) {
+            sendUserEvent(idProviderConfig, 'login', loginResult.user);
+        }
     } else {
         if (isAutoLogin) {
             throwAutoLoginFailedError(`Auto login failed for user [${principalKey}]`);
@@ -159,6 +163,8 @@ function doCreateUser(idProviderConfig, claims, userName, isAutoLogin) {
             email: email
         }));
         log.info(`User [${user.key}] created in ID Provider [${idProviderConfig._idProviderName}]`);
+
+        sendUserEvent(idProviderConfig, 'create', user);
     } catch (e) {
         if (`${e}`.startsWith('com.enonic.xp.security.PrincipalAlreadyExistsException')) {
             const principalKey = `user:${idProviderConfig._idProviderName}:${userName}`
@@ -241,6 +247,21 @@ function updateUserData(claims, idProviderConfig, user) {
         }));
 
         log.debug(`User [${user.key}] updated with displayName [${displayName}] and email [${email}]`);
+
+        sendUserEvent(idProviderConfig, 'modify', user);
+    }
+}
+
+function sendUserEvent(idProviderConfig, eventType, user) {
+    const eventPrefix = idProviderConfig.userEventPrefix;
+    const eventMode = idProviderConfig.userEventMode;
+
+    if (eventMode !== 'off') {
+        eventLib.send({
+            type: `${eventPrefix}.user.${eventType}`,
+            distributed: eventMode === 'distributed',
+            data: user,
+        });
     }
 }
 

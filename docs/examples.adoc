@@ -82,6 +82,10 @@ idprovider.<name>.autoLogin.createSession=(true|false)
 idprovider.<name>.autoLogin.wsHeader=(false|true)
 idprovider.<name>.autoLogin.allowedAudience=(space separated strings)
 
+# User Events
+idprovider.<name>.userEventPrefix=(string, defaults to the current application name)
+idprovider.<name>.userEventMode=(off|local|distributed, defaults to 'local')
+
 # EndSession
 idprovider.<name>.endSession.url=(string, required)
 idprovider.<name>.endSession.idTokenHintKey=(string)

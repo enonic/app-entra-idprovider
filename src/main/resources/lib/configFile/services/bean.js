@@ -30,6 +30,7 @@ exports.createIdProvider = (params) => {
     bean.setDisplayName(nullOrValue(params.displayName));
     bean.setDescription(nullOrValue(params.description));
     bean.setPermissions(__.toScriptValue(params.permissions));
+    bean.setIdProviderConfig(__.toScriptValue(params.idProviderConfig));
 
     return __.toNativeObject(bean.createIdProvider());
 };

@@ -66,6 +66,8 @@ exports.testValidConfig = () => {
                 'idprovider.myidp.autoLogin.wsHeader': 'false',
                 'idprovider.myidp.autoLogin.allowedAudience': 'audience1 audience2   audience3      audience4',
 
+                'idprovider.myidp.userEventPrefix': 'azure',
+                'idprovider.myidp.userEventMode': 'distributed',
                 'idprovider.myidp.groupFilter.0.groupProperty' : 'id',
                 'idprovider.myidp.groupFilter.0.regexp' : 'tid1',
                 'idprovider.myidp.groupFilter.0.and': 'false',
@@ -112,6 +114,8 @@ exports.testValidConfig = () => {
     test.assertFalse(config.autoLogin.wsHeader);
     test.assertJsonEquals(['audience1', 'audience2', 'audience3', 'audience4'], config.autoLogin.allowedAudience);
 
+    test.assertEquals('azure', config.userEventPrefix);
+    test.assertEquals('distributed', config.userEventMode);
     test.assertJsonEquals([{groupProperty: 'id', regexp: 'tid1', and: 'false'}], config.groupFilter);
     test.assertTrue(config.createAndUpdateGroupsOnLoginFromGraphApi);
     test.assertEquals('azure-ad-', config.groupPrefix);
