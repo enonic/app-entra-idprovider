@@ -1,0 +1,21 @@
+{
+    "menuItems": [
+      {
+        "title": "Usage",
+        "document": "usage"
+      },
+      {
+        "title": "Configuration",
+        "document": "config"
+      },
+      {
+        "title": "Examples",
+        "document": "examples"
+      },
+      {
+        "title": "Notes",
+        "document": "notes"
+      }
+    ]
+  }
+  
