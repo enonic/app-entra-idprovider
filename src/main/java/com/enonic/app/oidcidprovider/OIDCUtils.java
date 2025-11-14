@@ -90,18 +90,20 @@ public class OIDCUtils
             verification = JWT.require( Algorithm.none() );
         }
 
-        final boolean hasTenantIdPlaceholder = issuer.contains( TENANT_ID_PLACEHOLDER );
-        final String tid = decodedJWT.getClaim( "tid" ).asString();
-
-        if ( hasTenantIdPlaceholder )
+        String resolvedIssuer;
+        if ( issuer.contains( TENANT_ID_PLACEHOLDER ) )
         {
+            final String tid = decodedJWT.getClaim( "tid" ).asString();
             if ( allowedTenants == null || Arrays.stream( allowedTenants ).noneMatch( p -> "*".equals( p ) || Objects.equals( p, tid ) ) )
             {
                 throw new IllegalStateException( "Invalid TenantId: " + tid );
             }
+            resolvedIssuer = issuer.replace( TENANT_ID_PLACEHOLDER, tid );
         }
-
-        final String resolvedIssuer = hasTenantIdPlaceholder ? issuer.replace( TENANT_ID_PLACEHOLDER, tid ) : issuer;
+        else
+        {
+            resolvedIssuer = issuer;
+        }
 
         final JWTVerifier verifier = verification.withIssuer( resolvedIssuer )
             .withAudience( clientID )

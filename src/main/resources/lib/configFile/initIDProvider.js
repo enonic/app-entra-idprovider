@@ -24,9 +24,9 @@ function exists(providers, name) {
 
 exports.initUserStores = function() {
     const systemIdProviders = beanService.getIdProviders();
-    const configuredIdProviderNames = configFileLib.getAllIdProviderNames();
+    const configedIdProviderNames = configFileLib.getAllIdProviderNames();
 
-    configuredIdProviderNames.forEach(idProviderName => {
+    configedIdProviderNames.forEach(idProviderName => {
         if (
             configFileLib.shouldAutoInit() &&
             !exists(systemIdProviders, idProviderName)
