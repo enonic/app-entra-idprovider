@@ -155,7 +155,7 @@ exports.testDefaultConfigWithRequiredOptions = () => {
     test.assertJsonEquals([], config.defaultGroups);
 
     test.assertEquals('profile email', config.scopes);
-    test.assertEquals('sub', config.claimUsername);
+    test.assertEquals('oid', config.claimUsername);
 
     test.assertJsonEquals([], config.additionalEndpoints);
 
