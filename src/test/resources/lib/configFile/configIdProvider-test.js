@@ -70,6 +70,11 @@ exports.testValidConfig = () => {
                 'idprovider.myidp.userEventMode': 'distributed',
 
                 'idprovider.myidp.acceptLeeway': '2',
+                'idprovider.myidp.groupFilter.0.groupProperty' : 'id',
+                'idprovider.myidp.groupFilter.0.regexp' : 'tid1',
+                'idprovider.myidp.groupFilter.0.and': 'false',
+                'idprovider.myidp.pageSize': '10',
+                'idprovider.myidp.allowedTenants': 'tenant1 tenant2',
             }
         }
     });
@@ -115,6 +120,10 @@ exports.testValidConfig = () => {
     test.assertEquals('distributed', config.userEventMode);
 
     test.assertEquals(2, config.acceptLeeway);
+    test.assertJsonEquals([{groupProperty: 'id', regexp: 'tid1', and: 'false'}], config.groupFilter);
+    test.assertTrue(config.createAndUpdateGroupsOnLoginFromGraphApi);
+    test.assertEquals('azure-ad-', config.groupPrefix);
+    test.assertJsonEquals(['tenant1', 'tenant2'], config.allowedTenants);
 };
 
 exports.testDefaultConfigWithRequiredOptions = () => {
@@ -150,7 +159,7 @@ exports.testDefaultConfigWithRequiredOptions = () => {
     test.assertJsonEquals([], config.defaultGroups);
 
     test.assertEquals('profile email', config.scopes);
-    test.assertEquals('sub', config.claimUsername);
+    test.assertEquals('oid', config.claimUsername);
 
     test.assertJsonEquals([], config.additionalEndpoints);
 
@@ -167,6 +176,11 @@ exports.testDefaultConfigWithRequiredOptions = () => {
     test.assertJsonEquals([], config.autoLogin.allowedAudience);
 
     test.assertEquals(1, config.acceptLeeway);
+    test.assertJsonEquals([], config.groupFilter);
+    test.assertNull(config.pageSize);
+    test.assertTrue(config.createAndUpdateGroupsOnLoginFromGraphApi);
+    test.assertEquals('azure-ad-', config.groupPrefix);
+    test.assertJsonEquals([], config.allowedTenants);
 };
 
 exports.testValidateRequiredOptions = () => {

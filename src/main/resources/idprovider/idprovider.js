@@ -92,6 +92,7 @@ function handleAuthenticationResponse(req) {
         nonce: context.nonce,
         codeVerifier: context.codeVerifier,
         code: code,
+        allowedTenants: idProviderConfig.allowedTenants,
         acceptLeeway: idProviderConfig.acceptLeeway,
     });
 

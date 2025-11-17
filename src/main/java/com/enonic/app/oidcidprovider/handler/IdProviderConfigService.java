@@ -9,7 +9,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.enonic.app.oidcidprovider.jwt.RSAAlgorithmProvider;
 
-@Component(immediate = true, service = IdProviderConfigService.class, configurationPid = "com.enonic.app.oidcidprovider")
+@Component(immediate = true, service = IdProviderConfigService.class, configurationPid = "com.enonic.app.entraidprovider")
 public class IdProviderConfigService
 {
     private static final ConcurrentMap<String, IdProviderManager> CACHE = new ConcurrentHashMap<>();
