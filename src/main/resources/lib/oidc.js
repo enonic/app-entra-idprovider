@@ -6,9 +6,9 @@ function generateToken() {
     return bean.generateToken();
 }
 
-function parseClaims(idToken, issuer, clientId, nonce, idProviderName, allowedTenants) {
+function parseClaims(idToken, issuer, clientId, nonce, idProviderName, allowedTenants, acceptLeeway) {
     const bean = __.newBean('com.enonic.app.oidcidprovider.OIDCUtils');
-    const parsedJwt = bean.parseClaims(idToken, issuer, clientId, nonce, idProviderName, allowedTenants);
+    const parsedJwt = bean.parseClaims(idToken, issuer, clientId, nonce, idProviderName, allowedTenants, acceptLeeway);
     return __.toNativeObject(parsedJwt);
 }
 
@@ -57,6 +57,7 @@ function requestIDToken(params) {
     const method = params.method;
     const codeVerifier = params.codeVerifier;
     const allowedTenants = params.allowedTenants || [];
+    const acceptLeeway = params.acceptLeeway;
 
     //https://openid.net/specs/openid-connect-core-1_0.html#TokenRequest
     let requestParams = {'grant_type': 'authorization_code', 'code': code, 'redirect_uri': redirectUri};
@@ -112,7 +113,7 @@ function requestIDToken(params) {
         throw 'Token error [' + params.error + ']' + (params.error_description ? ': ' + params.error_description : '');
     }
 
-    const claims = parseClaims(responseBody.id_token, issuer, clientId, nonce, idProviderName, allowedTenants);
+    const claims = parseClaims(responseBody.id_token, issuer, clientId, nonce, idProviderName, allowedTenants, acceptLeeway);
     log.debug('Parsed claims: ' + JSON.stringify(claims));
 
     return {

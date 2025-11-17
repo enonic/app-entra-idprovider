@@ -93,6 +93,7 @@ function handleAuthenticationResponse(req) {
         codeVerifier: context.codeVerifier,
         code: code,
         allowedTenants: idProviderConfig.allowedTenants,
+        acceptLeeway: idProviderConfig.acceptLeeway,
     });
 
     checkClaimUsername(idToken.claims, idProviderConfig.claimUsername);

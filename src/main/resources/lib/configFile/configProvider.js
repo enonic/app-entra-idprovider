@@ -8,8 +8,8 @@ const GROUP_FILTER =
 
 const parseStringArray = value => value ? value.split(' ').filter(v => !!v) : [];
 const firstAtsToDollar = value => value ? value.replace(/@@\{/g, '${') : value;
-
 const defaultBooleanTrue = value => value !== 'false';
+const parseLong = (value, defaultValue) => /^-?\d+$/.test(value) ? +value : defaultValue;
 
 exports.getIdProviderConfig = function (idProviderName) {
     const cachedConfig = wellKnownService.getIdProviderConfig(idProviderName);
@@ -72,6 +72,7 @@ exports.getIdProviderConfig = function (idProviderName) {
         pageSize: rawIdProviderConfig[`${idProviderKeyBase}.pageSize`] || null,
         groupPrefix: rawIdProviderConfig[`${idProviderKeyBase}.groupPrefix`] || 'azure-ad-',
         allowedTenants: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.allowedTenants`]),
+        acceptLeeway: parseLong(rawIdProviderConfig[`${idProviderKeyBase}.acceptLeeway`], 1),
     };
 
     if (hasProperty(rawIdProviderConfig, idProviderKeyBase, 'endSession')) {

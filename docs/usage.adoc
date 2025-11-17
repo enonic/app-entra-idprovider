@@ -1,13 +1,13 @@
 = Usage
 :imagesdir: media/
 
-Follow these steps to start using the IDprovider
+Follow these steps to start using the ID provider
 
 == OIDC server
 
-You will need access to an OIDC server. These are available from a range of different providers like Google, Azure, Auth0 and ID porten, and you may run your own based on software.
+You will need access to an OIDC server. These are available from a range of different providers like Google, Entra, Auth0 and ID Porten, and you may run your own based on software.
 
-For your respective prodvider you will typically need to create a Client or application that will represent the Enonic integration. Typical values you will need later from this setup are typically:
+For your respective provider you will typically need to create a Client or application that will represent the Enonic integration. Typical values you will need later from this setup are typically:
 
 - Client ID
 - Client secret
@@ -25,12 +25,12 @@ Full details on how to configure the application is described in <<config#, the 
 
 You may also find our <<examples#, configureation examples>> useful.
 
-NOTE: Your Enonic IDprovider should automatically be create once you add your configuration file
+NOTE: Your Enonic ID provider should automatically be create once you add your configuration file
 
 
 === Manual setup
 
-If you disable `autoInit`, the IDproviders may manually by created by following these steps:
+If you disable `autoInit`, the ID providers may manually by created by following these steps:
 
 . From Enonic admin console: `XP menu` -> `Users` -> `New` -> `ID provider` https://www.youtube.com/watch?v=QZpBdsDlkA0[admin tool "Users"]
 . Fill in the `displayName` field, which generates the *ID provider name* just below
@@ -44,10 +44,10 @@ The ID provider name cannot be changed later, so choose wisely before saving.
 
 == Mapping
 
-Finally, you will need to map the IDprovider to an Enonic ingress/vhost where it will be used - i.e to enable login for the XP admin console, a website or an API.
+Finally, you will need to map the ID provider to an Enonic ingress/vhost where it will be used - i.e to enable login for the XP admin console, a website or an API.
 
 === Ingress
-When using the self service cloud, simply edit the Ingress, then select the idprovider you created above i.e. `myoidcprovider`.
+When using the self service cloud, simply edit the Ingress, then select the ID provider you created above i.e. `myoidcprovider`.
 
 Save, and the change should take effect shortly.
 
@@ -55,7 +55,7 @@ Save, and the change should take effect shortly.
 === Vhost
 To manually configure the ID provider on your XP instance, you will need a vhost definition.
 
-Edit the XP configuration file `com.enonic.xp.web.vhost.cfg`, and map the idprovider to your a vhost. 
+Edit the XP configuration file `com.enonic.xp.web.vhost.cfg`, and map the id provider to your a vhost.
 
 (See https://developer.enonic.com/docs/xp/stable/deployment/vhosts[Virtual Host Configuration] for more information).
 
@@ -68,7 +68,7 @@ mapping.example.target = /admin
 mapping.example.idProvider.myoidcprovider = default
 ----
 
-NOTE: `myoidcprovider` in the example above must match the name you used in the idprovider configuration.
+NOTE: `myoidcprovider` in the example above must match the name you used in the ID provider configuration.
 
 == Redirection/Callback URI
 
