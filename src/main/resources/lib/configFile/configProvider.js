@@ -40,7 +40,7 @@ exports.getIdProviderConfig = function (idProviderName) {
         clientId: rawIdProviderConfig[`${idProviderKeyBase}.clientId`] || null,
         clientSecret: rawIdProviderConfig[`${idProviderKeyBase}.clientSecret`] || null,
         defaultGroups: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.defaultGroups`]),
-        claimUsername: rawIdProviderConfig[`${idProviderKeyBase}.claimUsername`] || 'sub',
+        claimUsername: rawIdProviderConfig[`${idProviderKeyBase}.claimUsername`] || 'oid',
         mappings: {
             displayName: firstAtsToDollar(rawIdProviderConfig[`${idProviderKeyBase}.mappings.displayName`]) ||
                          '${userinfo.preferred_username}',
