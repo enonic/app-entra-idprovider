@@ -59,11 +59,8 @@ exports.getIdProviderConfig = function (idProviderName) {
         },
         userEventPrefix: rawIdProviderConfig[`${idProviderKeyBase}.userEventPrefix`] || app.name,
         userEventMode: rawIdProviderConfig[`${idProviderKeyBase}.userEventMode`] || 'local',
-        createAndUpdateGroupsOnLoginFromGraphApi: defaultBooleanTrue(
-            rawIdProviderConfig[
-                `${idProviderKeyBase}.createAndUpdateGroupsOnLoginFromGraphApi`
-            ]
-        ),
+        createAndUpdateGroupsOnLoginFromGraphApi: rawIdProviderConfig[`${idProviderKeyBase}.createAndUpdateGroupsOnLoginFromGraphApi`] ===
+                                                  'true' || false,
         groupFilter: extractPropertiesToArray(
             rawIdProviderConfig,
             `${idProviderKeyBase}.groupFilter.`,
