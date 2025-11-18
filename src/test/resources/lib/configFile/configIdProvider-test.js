@@ -70,6 +70,7 @@ exports.testValidConfig = () => {
                 'idprovider.myidp.userEventMode': 'distributed',
 
                 'idprovider.myidp.acceptLeeway': '2',
+                'idprovider.myidp.createAndUpdateGroupsOnLoginFromGraphApi': 'true',
                 'idprovider.myidp.groupFilter.0.groupProperty' : 'id',
                 'idprovider.myidp.groupFilter.0.regexp' : 'tid1',
                 'idprovider.myidp.groupFilter.0.and': 'false',
@@ -178,7 +179,7 @@ exports.testDefaultConfigWithRequiredOptions = () => {
     test.assertEquals(1, config.acceptLeeway);
     test.assertJsonEquals([], config.groupFilter);
     test.assertNull(config.pageSize);
-    test.assertTrue(config.createAndUpdateGroupsOnLoginFromGraphApi);
+    test.assertFalse(config.createAndUpdateGroupsOnLoginFromGraphApi);
     test.assertEquals('azure-ad-', config.groupPrefix);
     test.assertJsonEquals([], config.allowedTenants);
 };
