@@ -462,7 +462,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Example configuration using Google OIDC and standard form based authentication</p>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg:</div>
+<div class="title">com.enonic.app.entraidprovider.cfg:</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties">autoinit=true
 idprovider.google.oidcWellKnownEndpoint=https://accounts.google.com/.well-known/openid-configuration
@@ -482,7 +482,7 @@ idprovider.google.defaultGroups=group:google:employees</code></pre>
 <p>Example configuration using Auth0 with autologin supporting websockets</p>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg:</div>
+<div class="title">com.enonic.app.entraidprovider.cfg:</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties">autoinit=true
 idprovider.auth0.oidcWellKnownEndpoint=https://auth.enonic-qa.com/.well-known/openid-configuration
@@ -501,9 +501,9 @@ idprovider.auth0.mappings.displayName=@@{userinfo.name}</code></pre>
 <p>Example containing all available configuration options</p>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg:</div>
+<div class="title">com.enonic.app.entraidprovider.cfg:</div>
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties"># IDprovider setup
+<pre class="highlight"><code class="language-properties" data-lang="properties"># ID provider setup
 autoinit=(true | false)
 idprovider.&lt;name&gt;.displayName=(string)
 idprovider.&lt;name&gt;.description=(string)
@@ -552,7 +552,19 @@ idprovider.&lt;name&gt;.endSession.url=(string, required)
 idprovider.&lt;name&gt;.endSession.idTokenHintKey=(string)
 idprovider.&lt;name&gt;.endSession.postLogoutRedirectUriKey=(string)
 idprovider.&lt;name&gt;.endSession.additionalParameters.0.key=(string, required)
-idprovider.&lt;name&gt;.endSession.additionalParameters.0.value=(string, required)</code></pre>
+idprovider.&lt;name&gt;.endSession.additionalParameters.0.value=(string, required)
+
+# Fetch groups from Microsoft Graph API
+createAndUpdateGroupsOnLoginFromGraphApi=  (true or false, optional, defaults to "false")
+pageSize=  (number, optional)
+groupPrefix=  (string, optional, defaults to "azure-ad-")
+proxy.host=  (string, required)
+proxy.port=  (number between 0 and 65535, optional)
+proxy.user=  (string, optional)
+proxy.password=  (string, optional)
+groupFilter.[0..N].groupProperty=  (string, required)
+groupFilter.[0..N].regexp=  (string, required)
+groupFilter.[0..N].and=  (true or false, optional)</code></pre>
 </div>
 </div>
 </div>
@@ -560,7 +572,7 @@ idprovider.&lt;name&gt;.endSession.additionalParameters.0.value=(string, require
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-11-17 16:37:48 UTC
+Last updated 2025-11-19 11:17:21 UTC
 </div>
 </div>
 </body>

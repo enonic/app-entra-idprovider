@@ -449,10 +449,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#user_mappings">User mappings</a></li>
 <li><a href="#additional_endpoints">Additional endpoints</a></li>
 <li><a href="#autologin">Autologin</a></li>
-<li><a href="#endsession">endSession</a></li>
-<li><a href="#user_events">User Events</a>
+<li><a href="#endsession">endSession</a>
 <ul class="sectlevel2">
 <li><a href="#example_values">Example values</a></li>
+</ul>
+</li>
+<li><a href="#user_events">User Events</a></li>
+<li><a href="#fetch_groups_from_microsoft_graph_api">Fetch groups from Microsoft Graph API</a>
+<ul class="sectlevel2">
+<li><a href="#group_filter_example">Group filter example</a></li>
 </ul>
 </li>
 </ul>
@@ -499,7 +504,7 @@ For ease of reading we omit the <code>idprovider.&lt;name&gt;.</code> prefix in 
 <p>The application can automatically initialize, one or more ID providers using the following configuration fields:</p>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg</div>
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># ID provider setup
 autoinit=(true|false) <i class="conum" data-value="1"></i><b>(1)</b>
@@ -532,12 +537,12 @@ idprovider.&lt;name&gt;.description=(string, optional) <i class="conum" data-val
 <p>The Client parameters are mandatory for the Authorization Code Flow, but not used for Auto Login.You can obtain these values from your 3rd party OIDC server, like Google or Auth0 when creating a client/application there.</p>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg</div>
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># Client
 clientId=(string) <i class="conum" data-value="1"></i><b>(1)</b>
 clientSecret=(string) <i class="conum" data-value="2"></i><b>(2)</b>
-method=(post|basic|jwt)<i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+method=(post|basic|jwt) <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -577,7 +582,7 @@ You may disabe Authorization Code Flow by omitting <code>clientId</code> in your
 <p>These values can be obtained from your OIDC service when registering a new Client/application.</p>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg</div>
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># Authorization server
 oidcWellKnownEndpoint=(string) <i class="conum" data-value="1"></i><b>(1)</b>
@@ -656,7 +661,7 @@ rules.forceEmailVerification=(true|false) <i class="conum" data-value="5"></i><b
 <p>Additional rules enforced on user creation</p>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg</div>
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># Rules
 idprovider.&lt;name&gt;.rules.forceEmailVerification=(true|false, required) <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
@@ -691,7 +696,7 @@ For Authorization Code Flow, user data are synched with Enonic on every login. T
 </table>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg</div>
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># User mappings
 useUserinfo=(true|false) <i class="conum" data-value="1"></i><b>(1)</b>
@@ -739,7 +744,7 @@ defaultGroups=(space separated group keys) <i class="conum" data-value="6"></i><
 <p>You may optionally specify additional Endpoints to fetch and store more user data in the Enonic user profile.</p>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg</div>
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># Additional Endpoints
 additionalEndpoints.0.name=(string, required) <i class="conum" data-value="1"></i><b>(1)</b>
@@ -790,7 +795,7 @@ To enable Autologin, you need to specify the <code>jwksUri</code> in the ID Prov
 </table>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg</div>
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># Autologin
 autoLogin.createUser=(true|false) <i class="conum" data-value="1"></i><b>(1)</b>
@@ -830,14 +835,14 @@ There might also be another custom endpoint available that achieves the same pur
 The ID Provider Configuration schema tries to be dynamic enough to handle all cases.</p>
 </div>
 <div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg</div>
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># EndSession
 endSession.url=(string, required) <i class="conum" data-value="1"></i><b>(1)</b>
 endSession.idTokenHintKey=(string) <i class="conum" data-value="2"></i><b>(2)</b>
 endSession.postLogoutRedirectUriKey=(string) <i class="conum" data-value="3"></i><b>(3)</b>
-endSession.additionalParameters.0.key=(string)
-endSession.additionalParameters.0.value=(string)</code></pre>
+endSession.additionalParameters.[0..N].key=(string)
+endSession.additionalParameters.[0..N].value=(string)</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -853,31 +858,6 @@ endSession.additionalParameters.0.value=(string)</code></pre>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td><code>postLogoutRedirectUriKey</code> optionally set the <code>post_logout_redirect_uri</code> in your OpenID Provider</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="user_events"><a class="link" href="#user_events">User Events</a></h2>
-<div class="sectionbody">
-<div class="listingblock">
-<div class="title">com.enonic.app.oidcidprovider.cfg</div>
-<div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">userEventPrefix=(string, optional, defaults to "app.name")  <i class="conum" data-value="1"></i><b>(1)</b>
-userEventMode=(off|local|distributed, optional, defaults to "local")  <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>userEventPrefix</code> is used to customize the type of user events such as <code>login</code>, <code>create</code>, and <code>modify</code>.
-By default, the application name is used as the prefix. For instance, the login event will look like <code>&lt;userEventPrefix&gt;.user.login</code>. To listen for this event, use <code>custom.&lt;userEventPrefix&gt;.user.login</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>userEventMode</code> allows you to disable user events or specify whether they should be distributed in the cluster or locally.</td>
 </tr>
 </table>
 </div>
@@ -946,10 +926,127 @@ By default, the application name is used as the prefix. For instance, the login 
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="user_events"><a class="link" href="#user_events">User Events</a></h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">userEventPrefix=(string, optional, defaults to "app.name")  <i class="conum" data-value="1"></i><b>(1)</b>
+userEventMode=(off|local|distributed, optional, defaults to "local")  <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Allows you to customize the type of user events such as <code>login</code>, <code>create</code>, and <code>modify</code>.
+By default, the application name is used as the prefix. For instance, the login event will look like <code>&lt;userEventPrefix&gt;.user.login</code>. To listen for this event, use <code>custom.&lt;userEventPrefix&gt;.user.login</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Allows you to disable user events or specify whether they should be distributed in the cluster or locally.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="fetch_groups_from_microsoft_graph_api"><a class="link" href="#fetch_groups_from_microsoft_graph_api">Fetch groups from Microsoft Graph API</a></h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">createAndUpdateGroupsOnLoginFromGraphApi=  (true or false, optional, defaults to "false") <i class="conum" data-value="1"></i><b>(1)</b>
+pageSize=  (number, optional) <i class="conum" data-value="2"></i><b>(2)</b>
+groupPrefix=  (string, optional, defaults to "azure-ad-") <i class="conum" data-value="3"></i><b>(3)</b>
+
+# Configures the proxy settings for communication with the Microsoft Graph API
+proxy.host=  (string, required) <i class="conum" data-value="4"></i><b>(4)</b>
+proxy.port=  (number between 0 and 65535, optional) <i class="conum" data-value="5"></i><b>(5)</b>
+proxy.user=  (string, optional)  <i class="conum" data-value="6"></i><b>(6)</b>
+proxy.password=  (string, optional)  <i class="conum" data-value="7"></i><b>(7)</b>
+
+# Group Filter. Allows you to filter which user groups are imported from Microsoft Graph API.
+# To use this, you must define an array of rules. The array is zero-indexed (starts at 0).
+groupFilter.[0..N].groupProperty=  (string, required) <i class="conum" data-value="8"></i><b>(8)</b>
+groupFilter.[0..N].regexp=  (string, required) <i class="conum" data-value="9"></i><b>(9)</b>
+groupFilter.[0..N].and=  (true or false, optional) <i class="conum" data-value="10"></i><b>(10)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Create and update groups via Graph API. Automatically create and update groups upon user login, based on data returned from the Graph API. To sync groups from the Graph API to Enonic XP, you must grant the <code>Directory.Read.All</code> and <code>Directory.AccessAsUser.All</code> API permissions.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The page size for responses from the Graph API. If the result set exceeds this limit, the Graph API returns an <code><em>@odata.nextLink</em></code> property along with the first page of results.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Allows you to specify a prefix for Enonic XP groups to which the user will be added.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The proxy server hostname.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The proxy server port number.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The username for proxy authentication.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The password for proxy authentication.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>The name of the property on the Graph API group object to check against. This must be a valid property returned by the Graph API (e.g., properties found in the MemberOf response). <a href="https://docs.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties">List of properties</a> (e.g., <code>description</code>, <code>displayName</code>, <code>id</code>, <code>visibility</code>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>The Regular Expression to apply to the groupProperty.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>If set to true, this rule is combined with the previous filter in the array using an <code>AND</code> operator.</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="group_filter_example"><a class="link" href="#group_filter_example">Group filter example</a></h3>
+<div class="listingblock">
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.myidp.groupFilter.0.groupProperty=description
+idprovider.myidp.groupFilter.0.regexp=\\\$XP\\\$
+idprovider.myidp.groupFilter.0.and=false
+
+idprovider.myidp.groupFilter.1.groupProperty=displayName
+idprovider.myidp.groupFilter.1.regexp=^XP
+idprovider.myidp.groupFilter.1.and=false
+
+idprovider.myidp.groupFilter.2.groupProperty=id
+idprovider.myidp.groupFilter.2.regexp=12345-12345-12345-12345
+idprovider.myidp.groupFilter.2.and=false
+
+idprovider.myidp.groupFilter.3.groupProperty=visibility
+idprovider.myidp.groupFilter.3.regexp=Public
+idprovider.myidp.groupFilter.3.and=true</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-11-17 16:37:48 UTC
+Last updated 2025-11-19 11:17:21 UTC
 </div>
 </div>
 </body>
