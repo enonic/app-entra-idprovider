@@ -1,7 +1,7 @@
 = Configuration
 :imagesdir: media/
 
-The application is configured via a file called `com.enonic.app.oidcidprovider.cfg`, using the properties format.
+The application is configured via a file called `com.enonic.app.entraidprovider.cfg`, using the properties format.
 
 Since the configuration is extensive, documentation has been broken down into several sections below. Visit the examples section for a <<examples#,complete configuration file>>
 
