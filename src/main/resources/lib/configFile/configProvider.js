@@ -61,16 +61,19 @@ exports.getIdProviderConfig = function (idProviderName) {
         userEventMode: rawIdProviderConfig[`${idProviderKeyBase}.userEventMode`] || 'local',
         createAndUpdateGroupsOnLoginFromGraphApi: rawIdProviderConfig[`${idProviderKeyBase}.createAndUpdateGroupsOnLoginFromGraphApi`] ===
                                                   'true' || false,
-        groupFilter: extractPropertiesToArray(
-            rawIdProviderConfig,
-            `${idProviderKeyBase}.groupFilter.`,
-            GROUP_FILTER
-        ),
         pageSize: rawIdProviderConfig[`${idProviderKeyBase}.pageSize`] || null,
-        groupPrefix: rawIdProviderConfig[`${idProviderKeyBase}.groupPrefix`] || 'azure-ad-',
+        groupPrefix: rawIdProviderConfig[`${idProviderKeyBase}.groupPrefix`] || 'azure-ad',
         allowedTenants: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.allowedTenants`]),
         acceptLeeway: parseLong(rawIdProviderConfig[`${idProviderKeyBase}.acceptLeeway`], 1),
     };
+
+    if (hasProperty(rawIdProviderConfig, idProviderKeyBase, 'groupFilter')) {
+        config.groupFilter = extractPropertiesToArray(
+            rawIdProviderConfig,
+            `${idProviderKeyBase}.groupFilter.`,
+            GROUP_FILTER
+        );
+    }
 
     if (hasProperty(rawIdProviderConfig, idProviderKeyBase, 'endSession')) {
         config.endSession = {

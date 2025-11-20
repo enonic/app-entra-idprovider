@@ -45,6 +45,12 @@ NOTE:: `<tenantid>` must be replaced with a real tenant identifier in the config
 
 or if you plan to use a multi-tenant configuration:
 
+----
+idprovider.<name>.oidcWellKnownEndpoint=https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration
+----
+
+Alternatively, explicit endpoints can be set:
+
 [source,ini]
 ----
 idprovider.<name>.issuer=https://login.microsoftonline.com/{tenantid}/v2.0
@@ -53,8 +59,12 @@ idprovider.<name>.authorizationUrl=https://login.microsoftonline.com/organizatio
 idprovider.<name>.tokenUrl=https://login.microsoftonline.com/organizations/oauth2/v2.0/token
 idprovider.<name>.userinfoUrl=https://graph.microsoft.com/oidc/userinfo
 idprovider.<name>.jwksUri=https://login.microsoftonline.com/organizations/discovery/v2.0/keys
+----
 
-# Use * if you want to allow any tenant, but this is not recommended. Otherwise, use space-separated tenant IDs.
+Use `*` if you want to allow any tenant, but this is not recommended. Otherwise, use space-separated tenant IDs.
+
+[source,ini]
+----
 idprovider.<name>.allowedTenants=tenantid_1 tenantid_2 tenantid_3
 ----
 

@@ -31,7 +31,7 @@ function fromGraph(params, idProviderConfig) {
     // https://docs.microsoft.com/en-us/graph/api/user-list-memberof?view=graph-rest-1.0&tabs=cs
     // https://developer.microsoft.com/en-us/graph/graph-explorer?request=me/memberOf&method=GET&version=v1.0&GraphUrl=https://graph.microsoft.com
     var groupPrefix = sanitizeName(idProviderConfig.groupPrefix)
-    log.debug("groupPrefix: %s", JSON.stringify(groupPrefix, null, 4));
+    log.debug("groupPrefix: %s", groupPrefix);
     
     var pageSize = idProviderConfig.pageSize ? '?$top=' + idProviderConfig.pageSize : '';
 
@@ -52,7 +52,7 @@ function fromGraph(params, idProviderConfig) {
         // find users current ad groups
         var groupKeysInXp = getGroups(params.user.key)
             .filter(function(group) {
-                return group.key.startsWith(`group:${params.user.idProvider}:${groupPrefix}-`); // Only groups from AD
+                return group.key.startsWith(`group:${params.user.idProvider}:${groupPrefix}`);
             })
             .map(function(group) {
                 return group.key;
@@ -62,7 +62,7 @@ function fromGraph(params, idProviderConfig) {
         var groups = body.value;
 
         // filter groups
-        if(idProviderConfig.groupFilter) {
+        if (idProviderConfig.groupFilter && idProviderConfig.groupFilter.length > 0) {
             var groupFilters = forceArray(idProviderConfig.groupFilter);
             var checkGroups = groupFilters.reduce((t, f) => {
                 f.regexp = new RegExp(f.regexp)
