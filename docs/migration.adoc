@@ -81,7 +81,7 @@ idprovider.<name>.endSession.url=https://login.microsoftonline.com/common/oauth2
 
 ==== Replacement for `forceHttpsOnRedirectUri`
 
-This property is not supported by this ID provider.
+This property is not supported by this ID provider. With proper XP configuration a virtual host knows that `https` is in use.
 
 ==== Replacement for `user...`
 
@@ -102,7 +102,7 @@ idprovider.<name>.mappings.email=
 
 ==== `groupPrefix`
 
-The `groupPrefix` property allows you to specify a prefix for Enonic XP groups to which the user will be added. The default value is `azure-ad-` for backward compatibility.
+The `groupPrefix` property allows you to specify a prefix for Enonic XP groups to which the user will be added. The default value is `azure-ad` for backward compatibility.
 
 ==== User events
 
@@ -110,8 +110,7 @@ The new version of the ID provider supports the same user events but allows you 
 
 [source,ini]
 ----
-idprovider.<name>.userEventPrefix=myapp
-idprovider.<name>.userEventMode=off|local|distributed
+idprovider.<name>.userEventPrefix=
 ----
 
 In this version, the ID provider introduces the ability to control how user events are delivered locally, across the cluster, or disabled entirely. Default value is `local`.
@@ -121,9 +120,19 @@ In this version, the ID provider introduces the ability to control how user even
 idprovider.<name>.userEventMode=off|local|distributed
 ----
 
+To replicate the behavior of the legacy Azure ID Provider, use the following settings:
+
+[source,ini]
+----
+idprovider.<name>.userEventPrefix=azure
+idprovider.<name>.userEventMode=distributed
+----
+
 == Properties with usage restrictions
 
-The `defaultGroups` and `forceEmailVerification` properties are not supported by the Entra ID Provider.
+`forceEmailVerification` - should be always set to `false` (default value) - as Entra ID does not send a `email_verified` claim.
+
+The `defaultGroups` property is not supported by the Entra ID Provider.
 
 == Full Migration Example
 
