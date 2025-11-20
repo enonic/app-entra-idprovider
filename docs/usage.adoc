@@ -19,11 +19,11 @@ On your Enonic server, start by installing the application to your Enonic instan
 
 == Configure
 
-Secondly, the application requires a detailed configuration in order to communicate with the 3rd party OIDC server. Create a and tune a configuration file called `com.enonic.app.oidcidprovider.cfg` and add it to your XP instance.
+Secondly, the application requires a detailed configuration in order to communicate with the 3rd party OIDC server. Create a and tune a configuration file called `com.enonic.app.entraidprovider.cfg` and add it to your XP instance.
 
 Full details on how to configure the application is described in <<config#, the configuration chapter>>.
 
-You may also find our <<examples#, configureation examples>> useful.
+You may also find our <<examples#, configuration examples>> useful.
 
 NOTE: Your Enonic ID provider should automatically be create once you add your configuration file
 
@@ -39,7 +39,7 @@ image:idprovider-name.png[title="ID provider name is found/set in the name field
 +
 The ID provider name cannot be changed later, so choose wisely before saving.
 + 
-. For the "Application" field, select the "OIDC ID Provider" app you installed earlier.
+. For the "Application" field, select the "Entra ID Provider" app you installed earlier.
 
 
 == Mapping
@@ -55,7 +55,7 @@ Save, and the change should take effect shortly.
 === Vhost
 To manually configure the ID provider on your XP instance, you will need a vhost definition.
 
-Edit the XP configuration file `com.enonic.xp.web.vhost.cfg`, and map the id provider to your a vhost.
+Edit the XP configuration file `com.enonic.xp.web.vhost.cfg`, and map the id provider to your vhost.
 
 (See https://developer.enonic.com/docs/xp/stable/deployment/vhosts[Virtual Host Configuration] for more information).
 
@@ -65,20 +65,20 @@ Edit the XP configuration file `com.enonic.xp.web.vhost.cfg`, and map the id pro
 mapping.example.host = xp.example.com
 mapping.example.source = /
 mapping.example.target = /admin
-mapping.example.idProvider.myoidcprovider = default
+mapping.example.idProvider.myentraprovider = default
 ----
 
-NOTE: `myoidcprovider` in the example above must match the name you used in the ID provider configuration.
+NOTE: `myentraprovider` in the example above must match the name you used in the ID provider configuration.
 
 == Redirection/Callback URI
 
 Finally, if you want to use form-based authenticated (aka Authorization Code Flow), End-Users will be redirected back to your Enonic endpoint from the authorization server. For security reasons you will need to register this URL in the configuration of your OIDC providers Client/Application.
 
-The callback URL depends on your Enonic Vhost/Ingress and the name of the ID Provider you want to use. It typically has the following format: `[host+sourcepath]/_/idprovider/[idprovidername]`, where `idprovidername` must match the idprovider registered in Enonic XP.
+The callback URL depends on your Enonic Vhost/Ingress and the name of the ID provider you want to use. It typically has the following format: `[host+sourcepath]/_/idprovider/[idprovidername]`, where `idprovidername` must match the ID provider registered in Enonic XP.
 
-Example for a site:: https://www.example.com/_/idprovider/myoidcprovider
+Example for a site:: https://xp.example.com/_/idprovider/myoidcprovider
 
-Example for admin:: https://www.example.com/admin/tool/_/idprovider/myoidcprovider
+Example for admin:: https://xp.example.com/admin/tool/_/idprovider/myoidcprovider
 
 
 
