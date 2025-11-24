@@ -30,7 +30,7 @@ exports.createAndUpdateGroupsFromJwt = function(params, idProviderConfig) {
 function fromGraph(params, idProviderConfig) {
     // https://docs.microsoft.com/en-us/graph/api/user-list-memberof?view=graph-rest-1.0&tabs=cs
     // https://developer.microsoft.com/en-us/graph/graph-explorer?request=me/memberOf&method=GET&version=v1.0&GraphUrl=https://graph.microsoft.com
-    var groupPrefix = sanitizeName(idProviderConfig.groupPrefix)
+    var groupPrefix = idProviderConfig.groupPrefix;
     log.debug("groupPrefix: %s", groupPrefix);
     
     var pageSize = idProviderConfig.pageSize ? '?$top=' + idProviderConfig.pageSize : '';
@@ -103,7 +103,7 @@ function fromGraph(params, idProviderConfig) {
         groups.forEach(function(adGroup) {
             var xpGroup = createOrModify({
                 idProvider: params.user.idProvider,
-                name: sanitizeName(`${groupPrefix}-${adGroup.id}`),
+                name: sanitizeName(`${groupPrefix}${adGroup.id}`),
                 displayName: adGroup.displayName,
                 description: adGroup.description
             });

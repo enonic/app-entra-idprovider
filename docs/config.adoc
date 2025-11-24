@@ -229,7 +229,7 @@ By default, the application name is used as the prefix. For instance, the login 
 ----
 createAndUpdateGroupsOnLoginFromGraphApi=  (true or false, optional, defaults to "false") // <1>
 pageSize=  (number, optional) // <2>
-groupPrefix=  (string, optional, defaults to "azure-ad") // <3>
+groupPrefix=  (string, optional, defaults to "azure-ad-") // <3>
 
 # Configures the proxy settings for communication with the Microsoft Graph API
 proxy.host=  (string, required) // <4>

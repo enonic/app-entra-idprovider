@@ -92,7 +92,7 @@ idprovider.<name>.mappings.email=@@{userinfo.email}
 
 === groupPrefix
 
-The `groupPrefix` property allows you to specify a prefix for Enonic XP groups to which the user will be added. The default value is `azure-ad` for backward compatibility.
+The `groupPrefix` property allows you to specify a prefix for Enonic XP groups to which the user will be added. The default value is `azure-ad-` for backward compatibility.
 
 === User events
 
@@ -111,6 +111,8 @@ idprovider.<name>.userEventMode=distributed
 == Full Migration Example
 
 === Old configuration
+
+.com.enonic.app.azureadidprovider.cfg
 [source,properties]
 ----
 autoinit=true
@@ -126,6 +128,8 @@ idprovider.azure.forceHttpsOnRedirectUri=true
 ----
 
 === New configuration
+
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 autoinit=true

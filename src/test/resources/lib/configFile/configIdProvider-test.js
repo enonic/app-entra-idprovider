@@ -123,7 +123,7 @@ exports.testValidConfig = () => {
     test.assertEquals(2, config.acceptLeeway);
     test.assertJsonEquals([{groupProperty: 'id', regexp: 'tid1', and: 'false'}], config.groupFilter);
     test.assertTrue(config.createAndUpdateGroupsOnLoginFromGraphApi);
-    test.assertEquals('azure-ad', config.groupPrefix);
+    test.assertEquals('azure-ad-', config.groupPrefix);
     test.assertJsonEquals(['tenant1', 'tenant2'], config.allowedTenants);
 };
 
@@ -180,7 +180,7 @@ exports.testDefaultConfigWithRequiredOptions = () => {
     test.assertNull(config.groupFilter);
     test.assertNull(config.pageSize);
     test.assertFalse(config.createAndUpdateGroupsOnLoginFromGraphApi);
-    test.assertEquals('azure-ad', config.groupPrefix);
+    test.assertEquals('azure-ad-', config.groupPrefix);
     test.assertJsonEquals([], config.allowedTenants);
 };
 

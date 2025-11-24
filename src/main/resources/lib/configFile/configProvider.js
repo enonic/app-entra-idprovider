@@ -62,7 +62,7 @@ exports.getIdProviderConfig = function (idProviderName) {
         createAndUpdateGroupsOnLoginFromGraphApi: rawIdProviderConfig[`${idProviderKeyBase}.createAndUpdateGroupsOnLoginFromGraphApi`] ===
                                                   'true' || false,
         pageSize: rawIdProviderConfig[`${idProviderKeyBase}.pageSize`] || null,
-        groupPrefix: rawIdProviderConfig[`${idProviderKeyBase}.groupPrefix`] || 'azure-ad',
+        groupPrefix: rawIdProviderConfig[`${idProviderKeyBase}.groupPrefix`] || 'azure-ad-',
         allowedTenants: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.allowedTenants`]),
         acceptLeeway: parseLong(rawIdProviderConfig[`${idProviderKeyBase}.acceptLeeway`], 1),
     };
