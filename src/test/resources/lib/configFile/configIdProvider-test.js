@@ -177,7 +177,7 @@ exports.testDefaultConfigWithRequiredOptions = () => {
     test.assertJsonEquals([], config.autoLogin.allowedAudience);
 
     test.assertEquals(1, config.acceptLeeway);
-    test.assertJsonEquals([], config.groupFilter);
+    test.assertNull(config.groupFilter);
     test.assertNull(config.pageSize);
     test.assertFalse(config.createAndUpdateGroupsOnLoginFromGraphApi);
     test.assertEquals('azure-ad-', config.groupPrefix);
