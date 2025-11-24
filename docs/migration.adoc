@@ -41,7 +41,7 @@ In this case you also need to specify `allowedTenants`.
 idprovider.<name>.allowedTenants=tenantid_1 tenantid_2 tenantid_3
 ----
 
-Use `*` if you want to allow any tenant, but this is not recommended. Otherwise, use space-separated tenant IDs.
+Use `*` if you want to allow any tenant even from unknown organizations. Otherwise, use space-separated tenant IDs.
 
 === logoutUrl
 
