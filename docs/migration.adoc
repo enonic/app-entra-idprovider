@@ -9,7 +9,7 @@ NOTE:: The ID provider configuration supports only Microsoft identity platform v
 
 === tenantId
 
-The `tenantId` property is no longer used. You should use `oidcWellKnownEndpoint` instead. This approach is recommended for all new configurations, as the properties `issuer`, `authorizationUrl`, `tokenUrl`, `userinfoUrl`, and `jwksUri` will then be populated automatically.
+The `tenantId` property is no longer available. You should use `oidcWellKnownEndpoint` instead. This approach is recommended for all new configurations, as the properties `issuer`, `authorizationUrl`, `tokenUrl`, `userinfoUrl`, and `jwksUri` will then be populated automatically.
 
 Before:
 
@@ -25,7 +25,7 @@ After:
 idprovider.<name>.oidcWellKnownEndpoint=https://login.microsoftonline.com/<tenantid>/v2.0/.well-known/openid-configuration
 ----
 
-NOTE:: `<tenantid>` must be replaced with a real tenant identifier in the configuration.
+NOTE:: `<tenantid>` placeholder must be replaced with your real tenant identifier.
 
 or if you plan to use a multi-tenant configuration:
 
@@ -68,9 +68,9 @@ This property is not supported by this ID provider. With proper XP configuration
 
 === user...
 
-The `user.name` property is no longer used. You should use `claimUsername` instead. The default value is `oid`, which is extracted from the JWT token and serves as a unique and immutable user identifier.
+The `user.name` property is no longer available. You should use `claimUsername` instead. The default value is `oid`, which is extracted from the JWT token and serves as a unique and immutable user identifier.
 
-The `user.displayName` and `user.email` properties are no longer used. You should use `mappings.displayName` and `mappings.email` instead.
+The `user.displayName` and `user.email` properties are no longer available. You should use `mappings.displayName` and `mappings.email` instead.
 
 Before:
 
