@@ -467,7 +467,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The application is configured via a file called <code>com.enonic.app.oidcidprovider.cfg</code>, using the properties format.</p>
+<p>The application is configured via a file called <code>com.enonic.app.entraidprovider.cfg</code>, using the properties format.</p>
 </div>
 <div class="paragraph">
 <p>Since the configuration is extensive, documentation has been broken down into several sections below. Visit the examples section for a <a href="examples.ahtml">complete configuration file</a></p>
@@ -1046,7 +1046,7 @@ idprovider.myidp.groupFilter.3.and=true</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-11-19 11:17:21 UTC
+Last updated 2025-11-24 14:37:56 UTC
 </div>
 </div>
 </body>

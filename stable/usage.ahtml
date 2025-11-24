@@ -502,13 +502,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="configure"><a class="link" href="#configure">Configure</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Secondly, the application requires a detailed configuration in order to communicate with the 3rd party OIDC server. Create a and tune a configuration file called <code>com.enonic.app.oidcidprovider.cfg</code> and add it to your XP instance.</p>
+<p>Secondly, the application requires a detailed configuration in order to communicate with the 3rd party OIDC server. Create a and tune a configuration file called <code>com.enonic.app.entraidprovider.cfg</code> and add it to your XP instance.</p>
 </div>
 <div class="paragraph">
 <p>Full details on how to configure the application is described in <a href="config.ahtml">the configuration chapter</a>.</p>
 </div>
 <div class="paragraph">
-<p>You may also find our <a href="examples.ahtml">configureation examples</a> useful.</p>
+<p>You may also find our <a href="examples.ahtml">configuration examples</a> useful.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -542,7 +542,7 @@ Your Enonic ID provider should automatically be create once you add your configu
 </div>
 </li>
 <li>
-<p>For the "Application" field, select the "OIDC ID Provider" app you installed earlier.</p>
+<p>For the "Application" field, select the "Entra ID Provider" app you installed earlier.</p>
 </li>
 </ol>
 </div>
@@ -570,7 +570,7 @@ Your Enonic ID provider should automatically be create once you add your configu
 <p>To manually configure the ID provider on your XP instance, you will need a vhost definition.</p>
 </div>
 <div class="paragraph">
-<p>Edit the XP configuration file <code>com.enonic.xp.web.vhost.cfg</code>, and map the id provider to your a vhost.</p>
+<p>Edit the XP configuration file <code>com.enonic.xp.web.vhost.cfg</code>, and map the id provider to your vhost.</p>
 </div>
 <div class="paragraph">
 <p>(See <a href="https://developer.enonic.com/docs/xp/stable/deployment/vhosts">Virtual Host Configuration</a> for more information).</p>
@@ -581,7 +581,7 @@ Your Enonic ID provider should automatically be create once you add your configu
 <pre class="highlight"><code class="language-properties" data-lang="properties">mapping.example.host = xp.example.com
 mapping.example.source = /
 mapping.example.target = /admin
-mapping.example.idProvider.myoidcprovider = default</code></pre>
+mapping.example.idProvider.myentraprovider = default</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -591,7 +591,7 @@ mapping.example.idProvider.myoidcprovider = default</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<code>myoidcprovider</code> in the example above must match the name you used in the ID provider configuration.
+<code>myentraprovider</code> in the example above must match the name you used in the ID provider configuration.
 </td>
 </tr>
 </table>
@@ -606,17 +606,17 @@ mapping.example.idProvider.myoidcprovider = default</code></pre>
 <p>Finally, if you want to use form-based authenticated (aka Authorization Code Flow), End-Users will be redirected back to your Enonic endpoint from the authorization server. For security reasons you will need to register this URL in the configuration of your OIDC providers Client/Application.</p>
 </div>
 <div class="paragraph">
-<p>The callback URL depends on your Enonic Vhost/Ingress and the name of the ID Provider you want to use. It typically has the following format: <code>[host+sourcepath]/_/idprovider/[idprovidername]</code>, where <code>idprovidername</code> must match the idprovider registered in Enonic XP.</p>
+<p>The callback URL depends on your Enonic Vhost/Ingress and the name of the ID provider you want to use. It typically has the following format: <code>[host+sourcepath]/_/idprovider/[idprovidername]</code>, where <code>idprovidername</code> must match the ID provider registered in Enonic XP.</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Example for a site</dt>
 <dd>
-<p><a href="https://www.example.com/_/idprovider/myoidcprovider" class="bare">https://www.example.com/_/idprovider/myoidcprovider</a></p>
+<p><a href="https://xp.example.com/_/idprovider/myoidcprovider" class="bare">https://xp.example.com/_/idprovider/myoidcprovider</a></p>
 </dd>
 <dt class="hdlist1">Example for admin</dt>
 <dd>
-<p><a href="https://www.example.com/admin/tool/_/idprovider/myoidcprovider" class="bare">https://www.example.com/admin/tool/_/idprovider/myoidcprovider</a></p>
+<p><a href="https://xp.example.com/admin/tool/_/idprovider/myoidcprovider" class="bare">https://xp.example.com/admin/tool/_/idprovider/myoidcprovider</a></p>
 </dd>
 </dl>
 </div>
@@ -625,7 +625,7 @@ mapping.example.idProvider.myoidcprovider = default</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-11-19 11:17:21 UTC
+Last updated 2025-11-24 14:37:56 UTC
 </div>
 </div>
 </body>

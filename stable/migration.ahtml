@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.26">
-<title>Open ID Connect ID provider</title>
+<title>Migration from Azure ID provider</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,12 +437,27 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-right">
 <div id="header">
-<h1>Open ID Connect ID provider</h1>
+<h1>Migration from Azure ID provider</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#intro">Intro</a></li>
-<li><a href="#how_it_works">How it works</a></li>
+<li><a href="#migrating_core_configuration">Migrating Core Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#tenantid">tenantId</a></li>
+<li><a href="#logouturl">logoutUrl</a></li>
+<li><a href="#forcehttpsonredirecturi">forceHttpsOnRedirectUri</a></li>
+<li><a href="#user">user&#8230;&#8203;</a></li>
+<li><a href="#groupprefix">groupPrefix</a></li>
+<li><a href="#user_events">User events</a></li>
+<li><a href="#forceemailverification">forceEmailVerification</a></li>
+</ul>
+</li>
+<li><a href="#full_migration_example">Full Migration Example</a>
+<ul class="sectlevel2">
+<li><a href="#old_configuration">Old configuration</a></li>
+<li><a href="#new_configuration">New configuration</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -450,42 +465,195 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Authenticate using OIDC and JWT tokens</p>
+<p>This guide describes how to migrate from the legacy <code>com.enonic.app.azureadidprovider.cfg</code> configuration format to the new Entra ID Provider configuration format <code>com.enonic.app.entraidprovider.cfg</code>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="intro"><a class="link" href="#intro">Intro</a></h2>
+<h2 id="migrating_core_configuration"><a class="link" href="#migrating_core_configuration">Migrating Core Configuration</a></h2>
 <div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NOTE</dt>
+<dd>
+<p>The ID provider configuration supports only Microsoft identity platform v2.0 endpoints.</p>
+</dd>
+</dl>
+</div>
+<div class="sect2">
+<h3 id="tenantid"><a class="link" href="#tenantid">tenantId</a></h3>
 <div class="paragraph">
-<p>This application will act as an OIDC Relying Party for your Enonic XP instance. It verifies the identity of End-Users based on your OIDC Authorization Server or JWT token</p>
+<p>The <code>tenantId</code> property is no longer available. You should use <code>oidcWellKnownEndpoint</code> instead. This approach is recommended for all new configurations, as the properties <code>issuer</code>, <code>authorizationUrl</code>, <code>tokenUrl</code>, <code>userinfoUrl</code>, and <code>jwksUri</code> will then be populated automatically.</p>
 </div>
 <div class="paragraph">
-<p>Browser-based visitors are are redirected to the Authentication Server, and once successfully authenticated, a user will be created in Enonic XP.</p>
+<p>Before:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.tenantId=&lt;tenantid&gt;</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>API or machine-based clients can authenticate using OIDC JWT tokens.</p>
+<p>After:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.oidcWellKnownEndpoint=https://login.microsoftonline.com/&lt;tenantid&gt;/v2.0/.well-known/openid-configuration</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NOTE</dt>
+<dd>
+<p><code>&lt;tenantid&gt;</code> placeholder must be replaced with your real tenant identifier.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>or if you plan to use a multi-tenant configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.oidcWellKnownEndpoint=https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case you also need to specify <code>allowedTenants</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.allowedTenants=tenantid_1 tenantid_2 tenantid_3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use <code>*</code> if you want to allow any tenant even from unknown organizations. Otherwise, use space-separated tenant IDs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logouturl"><a class="link" href="#logouturl">logoutUrl</a></h3>
+<div class="paragraph">
+<p>The <code>logoutUrl</code> property is no longer used. You should use <code>endSession.url</code> instead.</p>
+</div>
+<div class="paragraph">
+<p>Before:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.logoutUrl=https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=https://yourdomain.com</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.endSession.url=https://login.microsoftonline.com/common/oauth2/v2.0/logout
+idprovider.&lt;name&gt;.endSession.postLogoutRedirectUriKey=https://yourdomain.com</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="forcehttpsonredirecturi"><a class="link" href="#forcehttpsonredirecturi">forceHttpsOnRedirectUri</a></h3>
+<div class="paragraph">
+<p>This property is not supported by this ID provider. With proper XP configuration a virtual host knows that <code>https</code> is in use.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="user"><a class="link" href="#user">user&#8230;&#8203;</a></h3>
+<div class="paragraph">
+<p>The <code>user.name</code> property is no longer available. You should use <code>claimUsername</code> instead. The default value is <code>oid</code>, which is extracted from the JWT token and serves as a unique and immutable user identifier.</p>
+</div>
+<div class="paragraph">
+<p>The <code>user.displayName</code> and <code>user.email</code> properties are no longer available. You should use <code>mappings.displayName</code> and <code>mappings.email</code> instead.</p>
+</div>
+<div class="paragraph">
+<p>Before:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.user.name=@@{oid}
+idprovider.&lt;name&gt;.user.displayName=@@{given_name} @@{family_name}
+idprovider.&lt;name&gt;.user.email=@@{email}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.claimUsername=oid # default
+idprovider.&lt;name&gt;.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
+idprovider.&lt;name&gt;.mappings.email=@@{userinfo.email}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="groupprefix"><a class="link" href="#groupprefix">groupPrefix</a></h3>
+<div class="paragraph">
+<p>The <code>groupPrefix</code> property allows you to specify a prefix for Enonic XP groups to which the user will be added. The default value is <code>azure-ad-</code> for backward compatibility.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="user_events"><a class="link" href="#user_events">User events</a></h3>
+<div class="paragraph">
+<p>User events configuration allows you to customize the event prefix and mode. The default value for the <code>userEventPrefix</code> is the name of the current application. Default value for the <code>userEventMode</code> is <code>local</code>. To replicate the behavior of the legacy Azure ID Provider, use the following settings:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.userEventPrefix=azure
+idprovider.&lt;name&gt;.userEventMode=distributed</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="forceemailverification"><a class="link" href="#forceemailverification">forceEmailVerification</a></h3>
+<div class="paragraph">
+<p><code>forceEmailVerification</code> should be always set to <code>false</code> (default value) - as Entra ID does not send a <code>email_verified</code> claim.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="how_it_works"><a class="link" href="#how_it_works">How it works</a></h2>
+<h2 id="full_migration_example"><a class="link" href="#full_migration_example">Full Migration Example</a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>The ID provider supports two different approaches</p>
+<div class="sect2">
+<h3 id="old_configuration"><a class="link" href="#old_configuration">Old configuration</a></h3>
+<div class="listingblock">
+<div class="title">com.enonic.app.azureadidprovider.cfg</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">autoinit=true
+idprovider.azure.tenantId= &lt;your-tenant-id&gt;
+idprovider.azure.clientId= &lt;your-client-id&gt;
+idprovider.azure.clientSecret= &lt;your-client-secret&gt;
+idprovider.azure.logoutUrl=https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=https://yourdomain.com
+idprovider.azure.createAndUpdateGroupsOnLoginFromGraphApi=true
+idprovider.azure.user.name=@@{oid}
+idprovider.azure.user.displayName=@@{given_name} @@{family_name}
+idprovider.azure.user.email=@@{email}
+idprovider.azure.forceHttpsOnRedirectUri=true</code></pre>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Authorization Code Flow using <code>client_secret_post</code>, <code>client_secret_basic</code> or <code>client_secret_jwt</code> methods.</p>
-</li>
-<li>
-<p>Auto login based on Authorization header with a JWT Bearer Token for Stateless Authentication.</p>
-</li>
-</ul>
 </div>
-<div class="paragraph">
-<p>It is possible to mix the two authentication methods for a single domain/vhost.</p>
+</div>
+<div class="sect2">
+<h3 id="new_configuration"><a class="link" href="#new_configuration">New configuration</a></h3>
+<div class="listingblock">
+<div class="title">com.enonic.app.entraidprovider.cfg</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">autoinit=true
+idprovider.azure.oidcWellKnownEndpoint=https://login.microsoftonline.com/&lt;your-tenant-id&gt;/v2.0/.well-known/openid-configuration
+idprovider.azure.clientId=&lt;your-client-id&gt;
+idprovider.azure.clientSecret=&lt;your-client-secret&gt;
+
+idprovider.azure.createAndUpdateGroupsOnLoginFromGraphApi=true
+
+idprovider.azure.claimUsername=oid
+idprovider.azure.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
+idprovider.azure.mappings.email=@@{userinfo.email}
+
+idprovider.azure.endSession.url=https://login.microsoftonline.com/&lt;your-tenant-id&gt;/oauth2/v2.0/logout
+idprovider.azure.endSession.postLogoutRedirectUriKey=https://yourdomain.com</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
