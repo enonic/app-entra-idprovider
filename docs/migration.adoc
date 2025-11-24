@@ -13,14 +13,14 @@ The `tenantId` property is no longer used. You should use `oidcWellKnownEndpoint
 
 Before:
 
-[source,ini]
+[source,properties]
 ----
 idprovider.<name>.tenantId=<tenantid>
 ----
 
 After:
 
-[source,ini]
+[source,properties]
 ----
 idprovider.<name>.oidcWellKnownEndpoint=https://login.microsoftonline.com/<tenantid>/v2.0/.well-known/openid-configuration
 ----
@@ -29,14 +29,14 @@ NOTE:: `<tenantid>` must be replaced with a real tenant identifier in the config
 
 or if you plan to use a multi-tenant configuration:
 
-[source,ini]
+[source,properties]
 ----
 idprovider.<name>.oidcWellKnownEndpoint=https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration
 ----
 
 In this case you also need to specify `allowedTenants`.
 
-[source,ini]
+[source,properties]
 ----
 idprovider.<name>.allowedTenants=tenantid_1 tenantid_2 tenantid_3
 ----
@@ -49,14 +49,14 @@ The `logoutUrl` property is no longer used. You should use `endSession.url` inst
 
 Before:
 
-[source,ini]
+[source,properties]
 ----
 idprovider.<name>.logoutUrl=https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=https://yourdomain.com
 ----
 
 After:
 
-[source,ini]
+[source,properties]
 ----
 idprovider.<name>.endSession.url=https://login.microsoftonline.com/common/oauth2/v2.0/logout
 idprovider.<name>.endSession.postLogoutRedirectUriKey=https://yourdomain.com
@@ -74,7 +74,7 @@ The `user.displayName` and `user.email` properties are no longer used. You shoul
 
 Before:
 
-[source,ini]
+[source,properties]
 ----
 idprovider.<name>.user.name=@@{oid}
 idprovider.<name>.user.displayName=@@{given_name} @@{family_name}
@@ -83,7 +83,7 @@ idprovider.<name>.user.email=@@{email}
 
 After:
 
-[source,ini]
+[source,properties]
 ----
 idprovider.<name>.claimUsername=oid # default
 idprovider.<name>.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
@@ -98,7 +98,7 @@ The `groupPrefix` property allows you to specify a prefix for Enonic XP groups t
 
 User events configuration allows you to customize the event prefix and mode. The default value for the `userEventPrefix` is the name of the current application. Default value for the `userEventMode` is `local`. To replicate the behavior of the legacy Azure ID Provider, use the following settings:
 
-[source,ini]
+[source,properties]
 ----
 idprovider.<name>.userEventPrefix=azure
 idprovider.<name>.userEventMode=distributed
@@ -111,7 +111,7 @@ idprovider.<name>.userEventMode=distributed
 == Full Migration Example
 
 === Old configuration
-[source,ini]
+[source,properties]
 ----
 autoinit=true
 idprovider.azure.tenantId= <your-tenant-id>
@@ -126,7 +126,7 @@ idprovider.azure.forceHttpsOnRedirectUri=true
 ----
 
 === New configuration
-[source,ini]
+[source,properties]
 ----
 autoinit=true
 idprovider.azure.oidcWellKnownEndpoint=https://login.microsoftonline.com/<your-tenant-id>/v2.0/.well-known/openid-configuration
