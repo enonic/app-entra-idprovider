@@ -435,11 +435,89 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article">
+<body class="article toc2 toc-right">
 <div id="header">
 <h1>Release notes</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#version_4_x">Version 4.x</a>
+<ul class="sectlevel2">
+<li><a href="#redirecturi">redirectUri</a></li>
+<li><a href="#user_events">User events</a></li>
+<li><a href="#clientsecret">clientSecret</a></li>
+</ul>
+</li>
+<li><a href="#version_3_x">Version 3.x</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="version_4_x"><a class="link" href="#version_4_x">Version 4.x</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="redirecturi"><a class="link" href="#redirecturi">redirectUri</a></h3>
+<div class="paragraph">
+<p>This version introduces breaking changes to how the <code>redirectUri</code> is constructed, which require updating the callbacks in your ID Provider.</p>
+</div>
+<div class="paragraph">
+<p>The <code>redirectUri</code> must now always match your virtual host mapping. Thanks to these changes, deep links will be handled correctly.</p>
+</div>
+<div class="paragraph">
+<p>For instance, you have the following <a href="https://developer.enonic.com/docs/xp/stable/deployment/vhosts">vhost mapping</a>:</p>
+</div>
+<div class="listingblock">
+<div class="title">com.enonic.xp.web.vhost.cfg</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">mapping.myoidc.host = example.com
+mapping.myoidc.source = /myadmin
+mapping.myoidc.target = /admin
+mapping.myoidc.idProvider.myoidc = default</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The correct <code>redirectUri</code> should be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">http://example.com:8080/myadmin/_/idprovider/myoidc</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="required_actions"><a class="link" href="#required_actions">Required Actions</a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Review your existing ID Provider settings.</p>
+</li>
+<li>
+<p>Update callbacks to follow the new <code>redirectUri</code> format.</p>
+</li>
+<li>
+<p>Ensure that the <code>redirectUri</code> fully matches your virtual host mapping.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="user_events"><a class="link" href="#user_events">User events</a></h3>
+<div class="paragraph">
+<p>Starting from version 4.0, you can specify the <code>userEventPrefix</code> and <code>userEventMode</code> properties to manage user events. More details can be found <a href="config.ahtml">here</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="clientsecret"><a class="link" href="#clientsecret">clientSecret</a></h3>
+<div class="paragraph">
+<p>Added support for multiple space-separated <code>clientSecret</code> values to follow Auth0 rotation best practices and avoid downtime from propagation delays.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="version_3_x"><a class="link" href="#version_3_x">Version 3.x</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>What&#8217;s new in version 3</p>
 </div>
@@ -463,9 +541,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 </div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-11-24 14:37:56 UTC
+Last updated 2025-11-26 12:36:54 UTC
 </div>
 </div>
 </body>
