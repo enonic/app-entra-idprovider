@@ -1,7 +1,7 @@
 = Configuration
 :imagesdir: media/
 
-The application is configured via a file called `com.enonic.app.oidcidprovider.cfg`, using the properties format.
+The application is configured via a file called `com.enonic.app.entraidprovider.cfg`, using the properties format.
 
 Since the configuration is extensive, documentation has been broken down into several sections below. Visit the examples section for a <<examples#,complete configuration file>>
 
@@ -18,7 +18,7 @@ IMPORTANT: For ease of reading we omit the `idprovider.<name>.` prefix in most o
 
 The application can automatically initialize, one or more ID providers using the following configuration fields:
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # ID provider setup
@@ -35,7 +35,7 @@ idprovider.<name>.description=(string, optional) // <3>
 
 The Client parameters are mandatory for the Authorization Code Flow, but not used for Auto Login.You can obtain these values from your 3rd party OIDC server, like Google or Auth0 when creating a client/application there.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Client
@@ -54,7 +54,7 @@ NOTE: You may disable Authorization Code Flow by omitting `clientId` in your con
 
 These values can be obtained from your OIDC service when registering a new Client/application.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Authorization server
@@ -91,7 +91,7 @@ Examples of OpenID Connect Discovery URL:
 
 Additional rules enforced on user creation
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Rules
@@ -108,7 +108,7 @@ This section describes how users are mapped from OIDC to Enonic.
 
 NOTE: For Authorization Code Flow, user data are synched with Enonic on every login. The user's `displayName` and `email` will be updated from the same sources as for user creation.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # User mappings
@@ -130,7 +130,7 @@ defaultGroups=(space separated group keys) // <6>
 
 You may optionally specify additional Endpoints to fetch and store more user data in the Enonic user profile.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Additional Endpoints
@@ -151,7 +151,7 @@ This application supports automatically logging in users when the client passes 
 
 NOTE: To enable Autologin, you need to specify the `jwksUri` in the ID Provider configuration or `oidcWellKnownEndpoint` that ID Provider uses to obtain the value for the `jwksUri` automatically.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Autologin
@@ -172,15 +172,15 @@ OpenID Connect Front-Channel Logout is optional and might not be supported by yo
 There might also be another custom endpoint available that achieves the same purpose.
 The ID Provider Configuration schema tries to be dynamic enough to handle all cases.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # EndSession
 endSession.url=(string, required) // <1>
 endSession.idTokenHintKey=(string) // <2>
 endSession.postLogoutRedirectUriKey=(string) // <3>
-endSession.additionalParameters.0.key=(string)
-endSession.additionalParameters.0.value=(string)
+endSession.additionalParameters.[0..N].key=(string)
+endSession.additionalParameters.[0..N].value=(string)
 ----
 
 <1> `url`: should contain the value of `end_session_endpoint` in your OpenID Provider 
@@ -208,7 +208,7 @@ ID-porten::
 
 == User Events
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 userEventPrefix=(string, optional, defaults to "app.name")  // <1>
@@ -219,3 +219,60 @@ userEventMode=(off|local|distributed, optional, defaults to "local")  // <2>
 <1> `userEventPrefix` is used to customize the type of user events such as `login`, `create`, and `modify`.
 By default, the application name is used as the prefix. For instance, the login event will look like `<userEventPrefix>.user.login`. To listen for this event, use `custom.<userEventPrefix>.user.login`.
 <2> `userEventMode` allows you to disable user events or specify whether they should be distributed in the cluster or locally.
+
+== Fetch groups from Microsoft Graph API
+
+.com.enonic.app.entraidprovider.cfg
+[source,properties]
+----
+createAndUpdateGroupsOnLoginFromGraphApi=  (true or false, optional, defaults to "false") // <1>
+pageSize=  (number, optional) // <2>
+groupPrefix=  (string, optional, defaults to "azure-ad-") // <3>
+
+# Configures the proxy settings for communication with the Microsoft Graph API
+proxy.host=  (string, required) // <4>
+proxy.port=  (number between 0 and 65535, optional) // <5>
+proxy.user=  (string, optional)  // <6>
+proxy.password=  (string, optional)  // <7>
+
+# Group Filter. Allows you to filter which user groups are imported from Microsoft Graph API.
+# To use this, you must define an array of rules. The array is zero-indexed (starts at 0).
+groupFilter.[0..N].groupProperty=  (string, required) // <8>
+groupFilter.[0..N].regexp=  (string, required) // <9>
+groupFilter.[0..N].and=  (true or false, optional) // <10>
+
+----
+
+<1> Create and update groups via Graph API. Automatically create and update groups upon user login, based on data returned from the Graph API. To sync groups from the Graph API to Enonic XP, you must grant the `Directory.Read.All` and `Directory.AccessAsUser.All` API permissions.
+<2> The page size for responses from the Graph API. If the result set exceeds this limit, the Graph API returns an `_@odata.nextLink_` property along with the first page of results.
+<3> Allows you to specify a prefix for Enonic XP groups to which the user will be added.
+<4> The proxy server hostname.
+<5> The proxy server port number.
+<6> The username for proxy authentication.
+<7> The password for proxy authentication.
+<8> The name of the property on the Graph API group object to check against. This must be a valid property returned by the Graph API (e.g., properties found in the MemberOf response). https://docs.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties[List of properties] (e.g., `description`, `displayName`, `id`, `visibility`).
+<9> The Regular Expression to apply to the groupProperty.
+<10> If set to true, this rule is combined with the previous filter in the array using an `AND` operator.
+
+=== Group filter example
+
+.com.enonic.app.entraidprovider.cfg
+[source,properties]
+----
+idprovider.myidp.groupFilter.0.groupProperty=description
+idprovider.myidp.groupFilter.0.regexp=\\\$XP\\\$
+idprovider.myidp.groupFilter.0.and=false
+
+idprovider.myidp.groupFilter.1.groupProperty=displayName
+idprovider.myidp.groupFilter.1.regexp=^XP
+idprovider.myidp.groupFilter.1.and=false
+
+idprovider.myidp.groupFilter.2.groupProperty=id
+idprovider.myidp.groupFilter.2.regexp=12345-12345-12345-12345
+idprovider.myidp.groupFilter.2.and=false
+
+idprovider.myidp.groupFilter.3.groupProperty=visibility
+idprovider.myidp.groupFilter.3.regexp=Public
+idprovider.myidp.groupFilter.3.and=true
+
+----

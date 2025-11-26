@@ -1,0 +1,148 @@
+= Migration from Azure ID provider
+:imagesdir: media/
+
+This guide describes how to migrate from the legacy `com.enonic.app.azureadidprovider.cfg` configuration format to the new Entra ID Provider configuration format `com.enonic.app.entraidprovider.cfg`.
+
+== Migrating Core Configuration
+
+NOTE:: The ID provider configuration supports only Microsoft identity platform v2.0 endpoints.
+
+=== tenantId
+
+The `tenantId` property is no longer available. You should use `oidcWellKnownEndpoint` instead. This approach is recommended for all new configurations, as the properties `issuer`, `authorizationUrl`, `tokenUrl`, `userinfoUrl`, and `jwksUri` will then be populated automatically.
+
+Before:
+
+[source,properties]
+----
+idprovider.<name>.tenantId=<tenantid>
+----
+
+After:
+
+[source,properties]
+----
+idprovider.<name>.oidcWellKnownEndpoint=https://login.microsoftonline.com/<tenantid>/v2.0/.well-known/openid-configuration
+----
+
+NOTE:: `<tenantid>` placeholder must be replaced with your real tenant identifier.
+
+or if you plan to use a multi-tenant configuration:
+
+[source,properties]
+----
+idprovider.<name>.oidcWellKnownEndpoint=https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration
+----
+
+In this case you also need to specify `allowedTenants`.
+
+[source,properties]
+----
+idprovider.<name>.allowedTenants=tenantid_1 tenantid_2 tenantid_3
+----
+
+Use `*` if you want to allow any tenant even from unknown organizations. Otherwise, use space-separated tenant IDs.
+
+=== logoutUrl
+
+The `logoutUrl` property is no longer used. You should use `endSession.url` instead.
+
+Before:
+
+[source,properties]
+----
+idprovider.<name>.logoutUrl=https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=https://yourdomain.com
+----
+
+After:
+
+[source,properties]
+----
+idprovider.<name>.endSession.url=https://login.microsoftonline.com/common/oauth2/v2.0/logout
+idprovider.<name>.endSession.postLogoutRedirectUriKey=https://yourdomain.com
+----
+
+=== forceHttpsOnRedirectUri
+
+This property is not supported by this ID provider. With proper XP configuration a virtual host knows that `https` is in use.
+
+=== user...
+
+The `user.name` property is no longer available. You should use `claimUsername` instead. The default value is `oid`, which is extracted from the JWT token and serves as a unique and immutable user identifier.
+
+The `user.displayName` and `user.email` properties are no longer available. You should use `mappings.displayName` and `mappings.email` instead.
+
+Before:
+
+[source,properties]
+----
+idprovider.<name>.user.name=@@{oid}
+idprovider.<name>.user.displayName=@@{given_name} @@{family_name}
+idprovider.<name>.user.email=@@{email}
+----
+
+After:
+
+[source,properties]
+----
+idprovider.<name>.claimUsername=oid # default
+idprovider.<name>.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
+idprovider.<name>.mappings.email=@@{userinfo.email}
+----
+
+=== groupPrefix
+
+The `groupPrefix` property allows you to specify a prefix for Enonic XP groups to which the user will be added. The default value is `azure-ad-` for backward compatibility.
+
+=== User events
+
+User events configuration allows you to customize the event prefix and mode. The default value for the `userEventPrefix` is the name of the current application. Default value for the `userEventMode` is `local`. To replicate the behavior of the legacy Azure ID Provider, use the following settings:
+
+[source,properties]
+----
+idprovider.<name>.userEventPrefix=azure
+idprovider.<name>.userEventMode=distributed
+----
+
+=== forceEmailVerification
+
+`forceEmailVerification` should be always set to `false` (default value) - as Entra ID does not send a `email_verified` claim.
+
+== Full Migration Example
+
+=== Old configuration
+
+.com.enonic.app.azureadidprovider.cfg
+[source,properties]
+----
+autoinit=true
+idprovider.azure.tenantId= <your-tenant-id>
+idprovider.azure.clientId= <your-client-id>
+idprovider.azure.clientSecret= <your-client-secret>
+idprovider.azure.logoutUrl=https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=https://yourdomain.com
+idprovider.azure.createAndUpdateGroupsOnLoginFromGraphApi=true
+idprovider.azure.user.name=@@{oid}
+idprovider.azure.user.displayName=@@{given_name} @@{family_name}
+idprovider.azure.user.email=@@{email}
+idprovider.azure.forceHttpsOnRedirectUri=true
+----
+
+=== New configuration
+
+.com.enonic.app.entraidprovider.cfg
+[source,properties]
+----
+autoinit=true
+idprovider.azure.oidcWellKnownEndpoint=https://login.microsoftonline.com/<your-tenant-id>/v2.0/.well-known/openid-configuration
+idprovider.azure.clientId=<your-client-id>
+idprovider.azure.clientSecret=<your-client-secret>
+
+idprovider.azure.createAndUpdateGroupsOnLoginFromGraphApi=true
+
+idprovider.azure.claimUsername=oid
+idprovider.azure.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
+idprovider.azure.mappings.email=@@{userinfo.email}
+
+idprovider.azure.endSession.url=https://login.microsoftonline.com/<your-tenant-id>/oauth2/v2.0/logout
+idprovider.azure.endSession.postLogoutRedirectUriKey=https://yourdomain.com
+----

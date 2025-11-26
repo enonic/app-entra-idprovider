@@ -3,6 +3,8 @@ const wellKnownService = require('/lib/configFile/wellKnownService');
 
 const END_SESSION_ADDITIONAL_PARAMETERS_PATTERN = '^idprovider\.[a-zA-Z0-9_-]+\.endSession\.additionalParameters\.(\\d+)\.(key|value)$';
 const ADDITIONAL_ENDPOINTS = "^idprovider\.[a-zA-Z0-9_-]+\.additionalEndpoints\.(\\d+)\.(name|url)$";
+const GROUP_FILTER =
+    /^idprovider\.[a-zA-Z0-9_-]+\.groupFilter\.(\d+)\.(groupProperty|regexp|and)$/;
 
 const parseStringArray = value => value ? value.split(' ').filter(v => !!v) : [];
 const firstAtsToDollar = value => value ? value.replace(/@@\{/g, '${') : value;
@@ -40,7 +42,7 @@ exports.getIdProviderConfig = function (idProviderName) {
         clientId: rawIdProviderConfig[`${idProviderKeyBase}.clientId`] || null,
         clientSecret: parsedClientSecrets && parsedClientSecrets.length ? parsedClientSecrets : null,
         defaultGroups: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.defaultGroups`]),
-        claimUsername: rawIdProviderConfig[`${idProviderKeyBase}.claimUsername`] || 'sub',
+        claimUsername: rawIdProviderConfig[`${idProviderKeyBase}.claimUsername`] || 'oid',
         mappings: {
             displayName: firstAtsToDollar(rawIdProviderConfig[`${idProviderKeyBase}.mappings.displayName`]) ||
                          '${userinfo.preferred_username}',
@@ -59,8 +61,21 @@ exports.getIdProviderConfig = function (idProviderName) {
         },
         userEventPrefix: rawIdProviderConfig[`${idProviderKeyBase}.userEventPrefix`] || app.name,
         userEventMode: rawIdProviderConfig[`${idProviderKeyBase}.userEventMode`] || 'local',
+        createAndUpdateGroupsOnLoginFromGraphApi: rawIdProviderConfig[`${idProviderKeyBase}.createAndUpdateGroupsOnLoginFromGraphApi`] ===
+                                                  'true' || false,
+        pageSize: rawIdProviderConfig[`${idProviderKeyBase}.pageSize`] || null,
+        groupPrefix: rawIdProviderConfig[`${idProviderKeyBase}.groupPrefix`] || 'azure-ad-',
+        allowedTenants: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.allowedTenants`]),
         acceptLeeway: parseLong(rawIdProviderConfig[`${idProviderKeyBase}.acceptLeeway`], 1),
     };
+
+    if (hasProperty(rawIdProviderConfig, idProviderKeyBase, 'groupFilter')) {
+        config.groupFilter = extractPropertiesToArray(
+            rawIdProviderConfig,
+            `${idProviderKeyBase}.groupFilter.`,
+            GROUP_FILTER
+        );
+    }
 
     if (hasProperty(rawIdProviderConfig, idProviderKeyBase, 'endSession')) {
         config.endSession = {
@@ -74,6 +89,15 @@ exports.getIdProviderConfig = function (idProviderName) {
 
     if (config.oidcWellKnownEndpoint != null) {
         takeConfigurationFromWellKnownEndpoint(config);
+    }
+
+    if (hasProperty(rawIdProviderConfig, idProviderKeyBase, 'proxy')) {
+        config.proxy = {
+            host: required(rawIdProviderConfig[`${idProviderKeyBase}.proxy.host`], 'proxy.host', idProviderName),
+            port: rawIdProviderConfig[`${idProviderKeyBase}.proxy.port`] || null,
+            user: rawIdProviderConfig[`${idProviderKeyBase}.proxy.user`] || null,
+            password: rawIdProviderConfig[`${idProviderKeyBase}.proxy.password`] || null,
+        }
     }
 
     validate(config, idProviderName);
