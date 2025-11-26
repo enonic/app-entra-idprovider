@@ -104,7 +104,10 @@ function requestIDToken(params) {
     log.debug('Received token response: ' + JSON.stringify(response));
 
     if (response.status !== 200) {
-        throw 'Error ' + response.status + ' while retrieving the ID Token';
+        return {
+            retry: true,
+            status: response.status,
+        }
     }
 
     const responseBody = JSON.parse(response.body);

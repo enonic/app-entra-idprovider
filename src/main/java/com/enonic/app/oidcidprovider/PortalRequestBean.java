@@ -13,6 +13,9 @@ import com.enonic.xp.script.bean.ScriptBean;
 import com.enonic.xp.web.HttpStatus;
 import com.enonic.xp.web.WebException;
 import com.enonic.xp.web.servlet.ServletRequestUrlHelper;
+import com.enonic.xp.web.servlet.UriRewritingResult;
+import com.enonic.xp.web.vhost.VirtualHost;
+import com.enonic.xp.web.vhost.VirtualHostHelper;
 
 public class PortalRequestBean
     implements ScriptBean
@@ -122,6 +125,26 @@ public class PortalRequestBean
     public boolean isAutoLoginFailed()
     {
         return Boolean.TRUE.equals( this.portalRequest.getRawRequest().getAttribute( autoLoginAttr ) );
+    }
+
+    public String getRedirectUri()
+    {
+        final VirtualHost virtualHost = VirtualHostHelper.getVirtualHost( portalRequest.getRawRequest() );
+
+        final UriRewritingResult rewritingResult =
+            ServletRequestUrlHelper.rewriteUri( portalRequest.getRawRequest(), virtualHost.getTarget() );
+
+        if ( rewritingResult.isOutOfScope() )
+        {
+            throw new IllegalStateException( "URI out of scope on vhost target " + virtualHost.getTarget() );
+        }
+
+        final String rewrittenUri = rewritingResult.getRewrittenUri();
+
+        final String path = rewrittenUri.endsWith( "/" ) ? rewrittenUri.substring( 0, rewrittenUri.length() - 1 ) : rewrittenUri;
+
+        return ServletRequestUrlHelper.getServerUrl( portalRequest.getRawRequest() ) + path + "/_/idprovider/" +
+            virtualHost.getDefaultIdProviderKey().toString();
     }
 
     @Override

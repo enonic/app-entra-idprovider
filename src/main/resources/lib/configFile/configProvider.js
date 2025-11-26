@@ -21,6 +21,8 @@ exports.getIdProviderConfig = function (idProviderName) {
 
     const rawIdProviderConfig = getRawIdProviderConfig(idProviderKeyBase);
 
+    const parsedClientSecrets = parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.clientSecret`]);
+
     const config = {
         _idProviderName: idProviderName,
 
@@ -38,7 +40,7 @@ exports.getIdProviderConfig = function (idProviderName) {
         method: rawIdProviderConfig[`${idProviderKeyBase}.method`] || 'post',
         scopes: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.scopes`]).join(' ') || 'profile email',
         clientId: rawIdProviderConfig[`${idProviderKeyBase}.clientId`] || null,
-        clientSecret: rawIdProviderConfig[`${idProviderKeyBase}.clientSecret`] || null,
+        clientSecret: parsedClientSecrets && parsedClientSecrets.length ? parsedClientSecrets : null,
         defaultGroups: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.defaultGroups`]),
         claimUsername: rawIdProviderConfig[`${idProviderKeyBase}.claimUsername`] || 'oid',
         mappings: {

@@ -1,6 +1,48 @@
 = Release notes
 :imagesdir: media/
 
+== Version 4.x
+
+=== redirectUri
+
+This version introduces breaking changes to how the `redirectUri` is constructed, which require updating the callbacks in your ID Provider.
+
+The `redirectUri` must now always match your virtual host mapping. Thanks to these changes, deep links will be handled correctly.
+
+For instance, you have the following https://developer.enonic.com/docs/xp/stable/deployment/vhosts[vhost mapping]:
+
+.com.enonic.xp.web.vhost.cfg
+[source,properties]
+----
+mapping.myoidc.host = example.com
+mapping.myoidc.source = /myadmin
+mapping.myoidc.target = /admin
+mapping.myoidc.idProvider.myoidc = default
+----
+
+The correct `redirectUri` should be:
+
+[source,properties]
+----
+http://example.com:8080/myadmin/_/idprovider/myoidc
+----
+
+==== Required Actions
+
+* Review your existing ID Provider settings.
+* Update callbacks to follow the new `redirectUri` format.
+* Ensure that the `redirectUri` fully matches your virtual host mapping.
+
+=== User events
+
+Starting from version 4.0, you can specify the `userEventPrefix` and `userEventMode` properties to manage user events. More details can be found <<config#, here>>.
+
+=== clientSecret
+
+Added support for multiple space-separated `clientSecret` values to follow Auth0 rotation best practices and avoid downtime from propagation delays.
+
+== Version 3.x
+
 What's new in version 3 
 
 - Starting from version 3.0, it is possible to specify `oidcWellKnownEndpoint` (Provider's OpenID Connect Discovery URL) to obtain the values for the `issuer`,`authorization_endpoint`, `token_endpoint`,  `userinfo_endpoint` and `jwks_uri`  properties.

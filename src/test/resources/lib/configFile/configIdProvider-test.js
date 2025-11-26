@@ -96,7 +96,7 @@ exports.testValidConfig = () => {
     test.assertEquals('post', config.method);
     test.assertEquals('name profile email nikname', config.scopes);
     test.assertEquals('clientId', config.clientId);
-    test.assertEquals('clientSecret', config.clientSecret);
+    test.assertJsonEquals(['clientSecret'], config.clientSecret);
     test.assertJsonEquals(['group:myidp:default', 'group:myidp:dev'], config.defaultGroups);
     test.assertEquals('username', config.claimUsername);
 
