@@ -1,11 +1,8 @@
-= Open ID Connect ID Provider
+= OpenID Connect ID Provider
 
-Authenticate your users using Open ID Connect.
+Authenticate your users using OIDC.
 
-This ID Provider application, acting as a OIDC Relying Party. will verify the identity of End-Users based on the authentication performed by your OIDC Authorization Server.
-It will redirect unauthenticated users to the Authentication Server and obtain basic information in order to create a user within Enonic XP.
-This ID Provider application follows the Authorization Code Flow and uses one of the `client_secret_post`, `client_secret_basic` or `client_secret_jwt` auth methods.
+== Documentation
 
-
-== link:docs/index.adoc[Configuration]
+Complete documentation can be found link:docs/index.adoc[here].
 

@@ -1,30 +1,30 @@
 = Release notes
 :imagesdir: media/
 
-== Version 4.x
+== Version 4.0
 
-=== redirectUri
+=== new Redirect URI
 
-This version introduces breaking changes to how the `redirectUri` is constructed, which require updating the callbacks in your ID Provider.
+This version introduces breaking changes to how the Redirect URI is constructed, which require updating the settings in your ID Service Provider.
 
-The `redirectUri` must now always match your virtual host mapping. Thanks to these changes, deep links will be handled correctly.
+Thanks to these changes, deep links will be handled correctly.
 
-For instance, you have the following https://developer.enonic.com/docs/xp/stable/deployment/vhosts[vhost mapping]:
+The Redirect URI now matches virtual host source path mapping. For instance, you have the following https://developer.enonic.com/docs/xp/stable/deployment/vhosts[vhost mapping]:
 
 .com.enonic.xp.web.vhost.cfg
 [source,properties]
 ----
-mapping.myoidc.host = example.com
-mapping.myoidc.source = /myadmin
+mapping.myoidc.host = xp.example.com
+mapping.myoidc.source = /my-admin
 mapping.myoidc.target = /admin
 mapping.myoidc.idProvider.myoidc = default
 ----
 
-The correct `redirectUri` should be:
+The correct Redirect URI should be:
 
-[source,properties]
+[source]
 ----
-http://example.com:8080/myadmin/_/idprovider/myoidc
+https://xp.example.com/my-admin/_/idprovider/myoidc
 ----
 
 ==== Required Actions

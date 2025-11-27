@@ -1,3 +1,4 @@
+[#examples]
 = Configuration examples
 :imagesdir: media/
 
@@ -32,78 +33,6 @@ idprovider.auth0.rules.forceEmailVerification=true
 idprovider.auth0.autoLogin.wsHeader=true
 idprovider.auth0.autoLogin.allowedAudience=https://service.example.com/api
 idprovider.auth0.mappings.displayName=@@{userinfo.name}
-----
-
-
-== All options
-
-Example containing all available configuration options
-
-.com.enonic.app.entraidprovider.cfg:
-[source,properties]
-----
-# ID provider setup
-autoinit=(true | false)
-idprovider.<name>.displayName=(string)
-idprovider.<name>.description=(string)
-
-# Client
-idprovider.<name>.clientId=(string)
-idprovider.<name>.clientSecret=(string)
-idprovider.<name>.method=(post|basic|jwt)
-
-# Authorization server
-idprovider.<name>.oidcWellKnownEndpoint=(string)
-idprovider.<name>.issuer=(string)
-idprovider.<name>.authorizationUrl=(string)
-idprovider.<name>.tokenUrl=(string)
-idprovider.<name>.userinfoUrl=(string)
-idprovider.<name>.jwksUri=(string)
-idprovider.<name>.usePkce=(true|false)
-
-# Rules
-idprovider.<name>.rules.forceEmailVerification=(true|false)
-
-# User mappings
-idprovider.<name>.useUserinfo=(true|false)
-idprovider.<name>.claimUsername=(string)
-idprovider.<name>.scopes=(space separated strings, defaults to "profile email")
-idprovider.<name>.mappings.displayName=(string, required, defaults to @@{userinfo.preferred_username})
-idprovider.<name>.mappings.email=(string, required, defaults to @@{userinfo.email})
-idprovider.<name>.defaultGroups=(space separated group keys)
-
-# Additional Endpoints
-idprovider.<name>.additionalEndpoints.0.name=(string, required)
-idprovider.<name>.additionalEndpoints.0.url=(string, required)
-
-# Autologin
-idprovider.<name>.autoLogin.createUser=(true|false)
-idprovider.<name>.autoLogin.createSession=(true|false)
-idprovider.<name>.autoLogin.wsHeader=(false|true)
-idprovider.<name>.autoLogin.allowedAudience=(space separated strings)
-
-# User Events
-idprovider.<name>.userEventPrefix=(string, defaults to the current application name)
-idprovider.<name>.userEventMode=(off|local|distributed, defaults to 'local')
-
-# EndSession
-idprovider.<name>.endSession.url=(string, required)
-idprovider.<name>.endSession.idTokenHintKey=(string)
-idprovider.<name>.endSession.postLogoutRedirectUriKey=(string)
-idprovider.<name>.endSession.additionalParameters.0.key=(string, required)
-idprovider.<name>.endSession.additionalParameters.0.value=(string, required)
-
-# Fetch groups from Microsoft Graph API
-createAndUpdateGroupsOnLoginFromGraphApi=  (true or false, optional, defaults to "false")
-pageSize=  (number, optional)
-groupPrefix=  (string, optional, defaults to "azure-ad-")
-proxy.host=  (string, required)
-proxy.port=  (number between 0 and 65535, optional)
-proxy.user=  (string, optional)
-proxy.password=  (string, optional)
-groupFilter.[0..N].groupProperty=  (string, required)
-groupFilter.[0..N].regexp=  (string, required)
-groupFilter.[0..N].and=  (true or false, optional)
 ----
 
 

@@ -1,19 +1,19 @@
-= Open ID Connect ID provider
+= OpenID Connect ID provider
 :imagesdir: media/
 
 Authenticate using OIDC and JWT tokens
 
 == Intro
 
-This application will act as an OIDC Relying Party for your Enonic XP instance. It verifies the identity of End-Users based on your OIDC Authorization Server or JWT token
+This application will act as an OIDC Relying Party for your Enonic XP instance. It verifies the identity of End-Users based on your OIDC Authorization Server or JWT token.
 
-Browser-based visitors are are redirected to the Authentication Server, and once successfully authenticated, a user will be created in Enonic XP. 
+Browser-based visitors are redirected to the Authentication Server, and once successfully authenticated, a user will be created in Enonic XP.
 
 API or machine-based clients can authenticate using OIDC JWT tokens.
 
 == How it works
 
-The ID provider supports two different approaches
+The ID provider supports two different approaches:
 
 * Authorization Code Flow using `client_secret_post`, `client_secret_basic` or `client_secret_jwt` methods.
 * Auto login based on Authorization header with a JWT Bearer Token for Stateless Authentication.
