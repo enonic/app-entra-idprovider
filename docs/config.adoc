@@ -8,9 +8,9 @@ Since the configuration is extensive, documentation has been broken down into se
 
 == General
 
-Enonic uses ID providers to provide auth for various endpoints such as Admin/websites and APIs. This application may back multiple ID providers, meaning you may for instance support Google, Entra, and Auth0 - and even multiple ID providers for a single OIDC service.
+Enonic uses ID providers to provide auth for various endpoints such as Admin/websites and APIs. This application is a based on https://developer.enonic.com/docs/oidc-idprovider/stable[OpenID Connect ID provider] and supports most of its features. At the same time it is primarily focused on Microsoft Entra as the OIDC provider, and adds support fetching groups from Microsoft Graph API.
 
-As such, most properties are prefixed with a named ID Provider i.e. `idprovider.[idprovidername].[configkey] = [value]`, where `idprovidername` is a unique name matching the ID provider in Enonic XP.
+This application may back multiple ID providers, most properties are prefixed with a named ID Provider i.e. `idprovider.[idprovidername].[configkey] = [value]`, where `idprovidername` is a unique name matching the ID provider in Enonic XP.
 
 IMPORTANT: For ease of reading we omit the `idprovider.<name>.` prefix in most of the documentation below. See the <<examples#examples,examples>> for a complete setup.
 
@@ -33,7 +33,7 @@ idprovider.<name>.description=(string, optional) // <3>
 
 == Client
 
-The Client parameters are mandatory for the Authorization Code Flow, but not used for Auto Login.You can obtain these values from your 3rd party OIDC server, like Google or Auth0 when creating a client/application there.
+The Client parameters are mandatory for the Authorization Code Flow, but not used for Auto Login.You can obtain these values from Microsoft Entra admin center when creating a client/application there.
 
 .com.enonic.app.entraidprovider.cfg
 [source,properties]
@@ -44,16 +44,16 @@ clientSecret=(space separated strings) // <2>
 method=(post|basic|jwt)// <3>
 usePkce=(true|false) // <4>
 ----
-<1> Client ID you obtain from your OIDC server
-<2> Client Secret you obtain from your OIDC server. A space-separated list of secrets used for rotation. The new secret can be added as a fallback to the old one.
+<1> Client ID you obtain from your Microsoft Entra admin center.
+<2> Client Secret you obtain from Microsoft Entra admin center. A space-separated list of secrets used for rotation. The new secret can be added as a fallback to the old one.
 <3> Optionally specify the `method` for how client ID and client secret will be passed to the OIDC server. The values correspond to `client_secret_basic`, `client_secret_post` and `private_key_jwt` methods, respectively.
 <4> `usePkce` - If set to `false`, the app will not use PKCE for the Authorization Code Flow.
 
-NOTE: You may disable Authorization Code Flow by omitting `clientId` in your configuration
+NOTE: You may disable Authorization Code Flow by omitting `clientId` in your configuration.
 
 == Authorization server
 
-These values can be obtained from your OIDC server when registering a new Client/application.
+These values can be obtained from your Microsoft Entra admin center when registering a new Client/application.
 
 .com.enonic.app.entraidprovider.cfg
 [source,properties]
@@ -71,14 +71,13 @@ jwksUri=(string) // <3>
 + 
 [TIP] 
 ====
-Your OIDC provider may only offer an `Issuer URL`. Then, the URLs are likely accessible under `[Issuer URL]/.well-known/openid-configuration`
+Microsoft Entra supports various endpoint URIs, depending on your setup. You may find them in your Entra admin center.
 
-Examples of OpenID Connect Discovery URL:
+Examples of well-known endpoints for various OpenID configuration document URIs:
 
-- **Auth0**: https://`YOUR_AUTH0_DOMAIN`/.well-known/openid-configuration
-- **Google**: https://accounts.google.com/.well-known/openid-configuration
-- **Entra**: https://login.microsoftonline.com/`TenantID`/v2.0/.well-known/openid-configuration
-- **ID-porten**: https://idporten.no/.well-known/openid-configuration
+- **Directory (tenant) ID**: https://login.microsoftonline.com/`TenantID`/v2.0/.well-known/openid-configuration
+- **organizations**: https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration
+
 ====
 <2> `userinfoUrl` if provided, the app will use this URL to retrieve the user claims to create/update the User in Enonic. (When `useUserinfo` is set to `false` this value is not used)
 <3> `jwksUri` - JSON Web Key Set (JWKS) - The app will use this URL to retrieve the public keys used to verify the signature of the Bearer Token during Auto Login, and ID Token in the Auth Code Flow. For Autologin flow, this property must exist.
@@ -91,10 +90,11 @@ Additional rules enforced on user creation
 [source,properties]
 ----
 # Rules
-rules.forceEmailVerification=(true|false, required) // <1>
+rules.allowedTenants=(space separated strings) // <1>
 ----
 
-<1> When `rules.forceEmailVerification` is `true` the claim `email_verified` (returned with the scope `email`) must exist.
+<1> If you use a multi-tenant configuration, specify space-separated tenant IDs. Use `*` if you want to allow any tenant even from unknown organizations.
+
 
 == User mappings
 
@@ -107,18 +107,18 @@ NOTE: For Authorization Code Flow, user data are synched with Enonic on every lo
 ----
 # User mappings
 useUserinfo=(true|false) // <1>
-claimUsername=(string, optional, defaults to "sub") // <2>
+claimUsername=(string, optional, defaults to "oid") // <2>
 scopes=(space separated strings, defaults to "profile email") // <3>
 mappings.displayName=(string, required, defaults to @@{userinfo.preferred_username}) // <4>
 mappings.email=(string, required, defaults to @@{userinfo.email}) // <5>
 defaultGroups=(space separated group keys) // <6>
 ----
 <1> When `useUserinfo` is set to `false` the claims from `userinfoUrl` will be ignored, and you must specify your own claims below.
-<2> Set this if `useUserinfo` is false.`claimUsername` is important, as this represents the unique identifier that will keep the Enonic user and the OIDC user in sync.  For instance, OIDC uses `sub` as a unique, unchanging user identifier, and in Microsoft Entra this comes from the user's `oid`.
+<2> Set this if `useUserinfo` is false.`claimUsername` is important, as this represents the unique identifier that will keep the Enonic user and the OIDC user in sync.
 <3> Set this if `useUserinfo` is false. Defines which scopes to fetch from the OIDC server.
-<4> Template for the `displayName` uses the format `+@@{expression}+`, e.g. `@@{userinfo.preferred_username}`
-<5> `email` mapping uses `+@@{expression}+` format, e.g. `@@{userinfo.email}`
-<6> `defaultGroups` makes all users member of the specified Enonic groups. The group name must be in the format `group:[idprovidername]:[groupname]`, e.g. `group:myidprovider:authors`
+<4> Template for the `displayName` uses the format `+@@{expression}+`, e.g. `@@{userinfo.preferred_username}`.
+<5> `email` mapping uses `+@@{expression}+` format, e.g. `@@{userinfo.email}`.
+<6> `defaultGroups` makes all users member of the specified Enonic groups. The group name must be in the format `group:[idprovidername]:[groupname]`, e.g. `group:myidprovider:authors`.
 
 == Additional endpoints
 
@@ -177,28 +177,9 @@ endSession.additionalParameters.[0..N].key=(string)
 endSession.additionalParameters.[0..N].value=(string)
 ----
 
-<1> `url`: should contain the value of `end_session_endpoint` in your OpenID Provider 
-<2> `idTokenHintKey` should optionally set the `id_token_hint` for your OpenID Provider 
-<3> `postLogoutRedirectUriKey` optionally set the `post_logout_redirect_uri` in your OpenID Provider
-
-=== Example values
-
-Auth0::
-* End Session URL: https://`YOUR_AUTH0_DOMAIN`/v2/logout
-* Post Logout Redirect URI parameter name: `returnTo`
-* Additional Parameters:
-** clientId = [Client ID]
-
-Google:: Not available
-
-Microsoft Entra::
-* End Session URL: https://login.microsoftonline.com/common/oauth2/v2.0/logout
-* Post Logout Redirect URI parameter name: `post_logout_redirect_uri`
-
-ID-porten::
-* End Session URL: https://login.idporten.no/logout
-* ID Token Hint parameter name: `id_token_hint`
-* Post Logout Redirect URI parameter name: `post_logout_redirect_uri`
+<1> `url`: should contain the value of `end_session_endpoint` in Entra admin center.
+<2> `idTokenHintKey` should optionally set the `id_token_hint` for Entra admin center.
+<3> `postLogoutRedirectUriKey` optionally set the `post_logout_redirect_uri` in your Entra admin center.
 
 == User Events
 

@@ -50,6 +50,7 @@ exports.getIdProviderConfig = function (idProviderName) {
         },
         rules: {
             forceEmailVerification: rawIdProviderConfig[`${idProviderKeyBase}.rules.forceEmailVerification`] === 'true',
+            allowedTenants: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.rules.allowedTenants`]),
         },
         additionalEndpoints: extractPropertiesToArray(rawIdProviderConfig, `${idProviderKeyBase}.additionalEndpoints.`,
             ADDITIONAL_ENDPOINTS),
@@ -65,7 +66,6 @@ exports.getIdProviderConfig = function (idProviderName) {
                                                   'true' || false,
         pageSize: rawIdProviderConfig[`${idProviderKeyBase}.pageSize`] || null,
         groupPrefix: rawIdProviderConfig[`${idProviderKeyBase}.groupPrefix`] || 'azure-ad-',
-        allowedTenants: parseStringArray(rawIdProviderConfig[`${idProviderKeyBase}.allowedTenants`]),
         acceptLeeway: parseLong(rawIdProviderConfig[`${idProviderKeyBase}.acceptLeeway`], 1),
     };
 
