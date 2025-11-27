@@ -435,7 +435,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article toc2 toc-right">
+<body id="configuration" class="article toc2 toc-right">
 <div id="header">
 <h1>Configuration</h1>
 <div id="toc" class="toc2">
@@ -460,6 +460,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#group_filter_example">Group filter example</a></li>
 </ul>
 </li>
+<li><a href="#all-options">All options</a></li>
 </ul>
 </div>
 </div>
@@ -470,7 +471,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>The application is configured via a file called <code>com.enonic.app.entraidprovider.cfg</code>, using the properties format.</p>
 </div>
 <div class="paragraph">
-<p>Since the configuration is extensive, documentation has been broken down into several sections below. Visit the examples section for a <a href="examples.ahtml">complete configuration file</a></p>
+<p>Since the configuration is extensive, documentation has been broken down into several sections below. All available configuration options <a href="#all-options">listed here</a>.</p>
 </div>
 </div>
 </div>
@@ -490,7 +491,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-For ease of reading we omit the <code>idprovider.&lt;name&gt;.</code> prefix in most of the documentation below. See the examples for a complete setup
+For ease of reading we omit the <code>idprovider.&lt;name&gt;.</code> prefix in most of the documentation below. See the <a href="examples.ahtml#examples">examples</a> for a complete setup.
 </td>
 </tr>
 </table>
@@ -542,7 +543,8 @@ idprovider.&lt;name&gt;.description=(string, optional) <i class="conum" data-val
 <pre class="highlight"><code class="language-properties" data-lang="properties"># Client
 clientId=(string) <i class="conum" data-value="1"></i><b>(1)</b>
 clientSecret=(space separated strings) <i class="conum" data-value="2"></i><b>(2)</b>
-method=(post|basic|jwt)<i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+method=(post|basic|jwt)<i class="conum" data-value="3"></i><b>(3)</b>
+usePkce=(true|false) <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -558,6 +560,10 @@ method=(post|basic|jwt)<i class="conum" data-value="3"></i><b>(3)</b></code></pr
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>Optionally specify the <code>method</code> for how client ID and client secret will be passed to the OIDC server. The values correspond to <code>client_secret_basic</code>, <code>client_secret_post</code> and <code>private_key_jwt</code> methods, respectively.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><code>usePkce</code> - If set to <code>false</code>, the app will not use PKCE for the Authorization Code Flow.</td>
 </tr>
 </table>
 </div>
@@ -579,7 +585,7 @@ You may disable Authorization Code Flow by omitting <code>clientId</code> in you
 <h2 id="authorization_server"><a class="link" href="#authorization_server">Authorization server</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>These values can be obtained from your OIDC service when registering a new Client/application.</p>
+<p>These values can be obtained from your OIDC server when registering a new Client/application.</p>
 </div>
 <div class="listingblock">
 <div class="title">com.enonic.app.entraidprovider.cfg</div>
@@ -590,9 +596,7 @@ issuer=(string)
 authorizationUrl=(string)
 tokenUrl=(string)
 userinfoUrl=(string) <i class="conum" data-value="2"></i><b>(2)</b>
-jwksUri=(string) <i class="conum" data-value="3"></i><b>(3)</b>
-usePkce=(true|false) <i class="conum" data-value="4"></i><b>(4)</b>
-rules.forceEmailVerification=(true|false) <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+jwksUri=(string) <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -642,14 +646,6 @@ rules.forceEmailVerification=(true|false) <i class="conum" data-value="5"></i><b
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td><code>jwksUri</code> - JSON Web Key Set (JWKS) - The app will use this URL to retrieve the public keys used to verify the signature of the Bearer Token during Auto Login, and ID Token in the Auth Code Flow. For Autologin flow, this property must exist.</td>
 </tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td><code>usePkce</code> - If set to <code>false</code>, the app will not use PKCE for the Authorization Code Flow.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>When set to true, only users with a verified e-mail will be allowed to log in to Enonic.</td>
-</tr>
 </table>
 </div>
 </div>
@@ -664,14 +660,14 @@ rules.forceEmailVerification=(true|false) <i class="conum" data-value="5"></i><b
 <div class="title">com.enonic.app.entraidprovider.cfg</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># Rules
-idprovider.&lt;name&gt;.rules.forceEmailVerification=(true|false, required) <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+rules.forceEmailVerification=(true|false, required) <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>When <code>forceEmailVerification</code> is <code>true</code> the claim <code>email_verified</code> (returned with the scope <code>email</code>) must exist.</td>
+<td>When <code>rules.forceEmailVerification</code> is <code>true</code> the claim <code>email_verified</code> (returned with the scope <code>email</code>) must exist.</td>
 </tr>
 </table>
 </div>
@@ -780,7 +776,7 @@ For multiple endpoints, simply add more lines, and iterate the array counter.
 <p>Autologin is a concept in Enonic XP, where every request (without an existing session) may automatically be logged in. This is for instance useful if you want to support authentication for an API, rather than a regular website.</p>
 </div>
 <div class="paragraph">
-<p>This application supports automatically logging in users when the client passes the a special header: <code>Authorization: Bearer &lt;token&gt;</code> - The token must be a valid JWT for your ID provider</p>
+<p>This application supports automatically logging in users when the client passes a special header: <code>Authorization: Bearer &lt;token&gt;</code> - The token must be a valid JWT for your ID provider.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -816,7 +812,7 @@ autoLogin.allowedAudience=(space separated strings) <i class="conum" data-value=
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Id provider will look for a token in the Sec-WebSocket-Protocol header.</td>
+<td>ID provider will look for a token in the Sec-WebSocket-Protocol header.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -830,7 +826,7 @@ autoLogin.allowedAudience=(space separated strings) <i class="conum" data-value=
 <h2 id="endsession"><a class="link" href="#endsession">endSession</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>OpenID Connect Front-Channel Logout is optional and might not be supported by your authentication server. You can check if the endpoint is available in the Open ID Configuration (<code>.well-known/openid-configuration</code>) under the field <code>end_session_endpoint</code>
+<p>OpenID Connect Front-Channel Logout is optional and might not be supported by your authentication server. You can check if the endpoint is available in the OpenID Configuration (<code>.well-known/openid-configuration</code>) under the field <code>end_session_endpoint</code>.
 There might also be another custom endpoint available that achieves the same purpose.
 The ID Provider Configuration schema tries to be dynamic enough to handle all cases.</p>
 </div>
@@ -1043,10 +1039,85 @@ idprovider.myidp.groupFilter.3.and=true</code></pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="all-options"><a class="link" href="#all-options">All options</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All available configuration options</p>
+</div>
+<div class="listingblock">
+<div class="title">com.enonic.app.entraidprovider.cfg:</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties"># ID provider setup
+autoinit=(true | false)
+idprovider.&lt;name&gt;.displayName=(string)
+idprovider.&lt;name&gt;.description=(string)
+
+# Client
+idprovider.&lt;name&gt;.clientId=(string)
+idprovider.&lt;name&gt;.clientSecret=(string)
+idprovider.&lt;name&gt;.method=(post|basic|jwt)
+idprovider.&lt;name&gt;.usePkce=(true|false)
+
+# Authorization server
+idprovider.&lt;name&gt;.oidcWellKnownEndpoint=(string)
+idprovider.&lt;name&gt;.issuer=(string)
+idprovider.&lt;name&gt;.authorizationUrl=(string)
+idprovider.&lt;name&gt;.tokenUrl=(string)
+idprovider.&lt;name&gt;.userinfoUrl=(string)
+idprovider.&lt;name&gt;.jwksUri=(string)
+
+# Rules
+idprovider.&lt;name&gt;.rules.allowedTenants=(space separated strings, or * for all)
+
+# User mappings
+idprovider.&lt;name&gt;.useUserinfo=(true|false)
+idprovider.&lt;name&gt;.claimUsername=(string)
+idprovider.&lt;name&gt;.scopes=(space separated strings, defaults to "profile email")
+idprovider.&lt;name&gt;.mappings.displayName=(string, required, defaults to @@{userinfo.preferred_username})
+idprovider.&lt;name&gt;.mappings.email=(string, required, defaults to @@{userinfo.email})
+idprovider.&lt;name&gt;.defaultGroups=(space separated group keys)
+
+# Additional Endpoints
+idprovider.&lt;name&gt;.additionalEndpoints.0.name=(string, required)
+idprovider.&lt;name&gt;.additionalEndpoints.0.url=(string, required)
+
+# Autologin
+idprovider.&lt;name&gt;.autoLogin.createUser=(true|false)
+idprovider.&lt;name&gt;.autoLogin.createSession=(true|false)
+idprovider.&lt;name&gt;.autoLogin.wsHeader=(false|true)
+idprovider.&lt;name&gt;.autoLogin.allowedAudience=(space separated strings)
+
+# User Events
+idprovider.&lt;name&gt;.userEventPrefix=(string, defaults to the current application name)
+idprovider.&lt;name&gt;.userEventMode=(off|local|distributed, defaults to 'local')
+
+# EndSession
+idprovider.&lt;name&gt;.endSession.url=(string, required)
+idprovider.&lt;name&gt;.endSession.idTokenHintKey=(string)
+idprovider.&lt;name&gt;.endSession.postLogoutRedirectUriKey=(string)
+idprovider.&lt;name&gt;.endSession.additionalParameters.0.key=(string, required)
+idprovider.&lt;name&gt;.endSession.additionalParameters.0.value=(string, required)
+
+# Fetch groups from Microsoft Graph API
+idprovider.&lt;name&gt;.createAndUpdateGroupsOnLoginFromGraphApi=  (true or false, optional, defaults to "false")
+idprovider.&lt;name&gt;.pageSize=  (number, optional)
+idprovider.&lt;name&gt;.groupPrefix=  (string, optional, defaults to "azure-ad-")
+idprovider.&lt;name&gt;.proxy.host=  (string, required)
+idprovider.&lt;name&gt;.proxy.port=  (number between 0 and 65535, optional)
+idprovider.&lt;name&gt;.proxy.user=  (string, optional)
+idprovider.&lt;name&gt;.proxy.password=  (string, optional)
+idprovider.&lt;name&gt;.groupFilter.[0..N].groupProperty=  (string, required)
+idprovider.&lt;name&gt;.groupFilter.[0..N].regexp=  (string, required)
+idprovider.&lt;name&gt;.groupFilter.[0..N].and=  (true or false, optional)</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-11-26 12:36:54 UTC
+Last updated 2025-11-27 08:55:53 UTC
 </div>
 </div>
 </body>
