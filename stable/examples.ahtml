@@ -441,8 +441,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#google">Google</a></li>
-<li><a href="#auth0">Auth0</a></li>
+<li><a href="#single_tenant">Single Tenant</a></li>
+<li><a href="#multi_tenant">Multi Tenant</a></li>
 </ul>
 </div>
 </div>
@@ -455,40 +455,38 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="google"><a class="link" href="#google">Google</a></h2>
+<h2 id="single_tenant"><a class="link" href="#single_tenant">Single Tenant</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Example configuration using Google OIDC and standard form based authentication</p>
+<p>Example configuration using Single Directory (Tenant)</p>
 </div>
 <div class="listingblock">
 <div class="title">com.enonic.app.entraidprovider.cfg:</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties">autoinit=true
-idprovider.google.oidcWellKnownEndpoint=https://accounts.google.com/.well-known/openid-configuration
-idprovider.google.clientId=********.apps.googleusercontent.com
-idprovider.google.clientSecret=********
-idprovider.google.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
-idprovider.google.rules.forceEmailVerification=true
-idprovider.google.defaultGroups=group:google:employees</code></pre>
+idprovider.entra.oidcWellKnownEndpoint=https://login.microsoftonline.com/12345678-1234-1234-1234-123456789abc/v2.0/.well-known/openid-configuration
+idprovider.entra.clientId=********
+idprovider.entra.clientSecret=********
+idprovider.entra.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="auth0"><a class="link" href="#auth0">Auth0</a></h2>
+<h2 id="multi_tenant"><a class="link" href="#multi_tenant">Multi Tenant</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Example configuration using Auth0 with autologin supporting websockets</p>
+<p>Example configuration using Single Directory (Tenant)</p>
 </div>
 <div class="listingblock">
 <div class="title">com.enonic.app.entraidprovider.cfg:</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties">autoinit=true
-idprovider.auth0.oidcWellKnownEndpoint=https://auth.enonic-qa.com/.well-known/openid-configuration
-idprovider.auth0.rules.forceEmailVerification=true
-idprovider.auth0.autoLogin.wsHeader=true
-idprovider.auth0.autoLogin.allowedAudience=https://service.example.com/api
-idprovider.auth0.mappings.displayName=@@{userinfo.name}</code></pre>
+idprovider.entra.oidcWellKnownEndpoint=https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration
+idprovider.entra.clientId=********
+idprovider.entra.clientSecret=********
+idprovider.entra.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
+idprovider.entra.rules.allowedTenants=12345678-1234-1234-1234-123456789abc 87654321-4321-4321-4321-cba987654321</code></pre>
 </div>
 </div>
 </div>
@@ -496,7 +494,7 @@ idprovider.auth0.mappings.displayName=@@{userinfo.name}</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-11-27 08:55:53 UTC
+Last updated 2025-11-27 09:43:39 UTC
 </div>
 </div>
 </body>

@@ -449,11 +449,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#user_mappings">User mappings</a></li>
 <li><a href="#additional_endpoints">Additional endpoints</a></li>
 <li><a href="#autologin">Autologin</a></li>
-<li><a href="#endsession">endSession</a>
-<ul class="sectlevel2">
-<li><a href="#example_values">Example values</a></li>
-</ul>
-</li>
+<li><a href="#endsession">endSession</a></li>
 <li><a href="#user_events">User Events</a></li>
 <li><a href="#fetch_groups_from_microsoft_graph_api">Fetch groups from Microsoft Graph API</a>
 <ul class="sectlevel2">
@@ -479,10 +475,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="general"><a class="link" href="#general">General</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Enonic uses ID providers to provide auth for various endpoints such as Admin/websites and APIs. This application may back multiple ID providers, meaning you may for instance support Google, Entra, and Auth0 - and even multiple ID providers for a single OIDC service.</p>
+<p>Enonic uses ID providers to provide auth for various endpoints such as Admin/websites and APIs. This application is a based on <a href="https://developer.enonic.com/docs/oidc-idprovider/stable">OpenID Connect ID provider</a> and supports most of its features. At the same time it is primarily focused on Microsoft Entra as the OIDC provider, and adds support fetching groups from Microsoft Graph API.</p>
 </div>
 <div class="paragraph">
-<p>As such, most properties are prefixed with a named ID Provider i.e. <code>idprovider.[idprovidername].[configkey] = [value]</code>, where <code>idprovidername</code> is a unique name matching the ID provider in Enonic XP.</p>
+<p>This application may back multiple ID providers, most properties are prefixed with a named ID Provider i.e. <code>idprovider.[idprovidername].[configkey] = [value]</code>, where <code>idprovidername</code> is a unique name matching the ID provider in Enonic XP.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -535,7 +531,7 @@ idprovider.&lt;name&gt;.description=(string, optional) <i class="conum" data-val
 <h2 id="client"><a class="link" href="#client">Client</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Client parameters are mandatory for the Authorization Code Flow, but not used for Auto Login.You can obtain these values from your 3rd party OIDC server, like Google or Auth0 when creating a client/application there.</p>
+<p>The Client parameters are mandatory for the Authorization Code Flow, but not used for Auto Login.You can obtain these values from Microsoft Entra admin center when creating a client/application there.</p>
 </div>
 <div class="listingblock">
 <div class="title">com.enonic.app.entraidprovider.cfg</div>
@@ -551,11 +547,11 @@ usePkce=(true|false) <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Client ID you obtain from your OIDC server</td>
+<td>Client ID you obtain from your Microsoft Entra admin center.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Client Secret you obtain from your OIDC server. A space-separated list of secrets used for rotation. The new secret can be added as a fallback to the old one.</td>
+<td>Client Secret you obtain from Microsoft Entra admin center. A space-separated list of secrets used for rotation. The new secret can be added as a fallback to the old one.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -574,7 +570,7 @@ usePkce=(true|false) <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-You may disable Authorization Code Flow by omitting <code>clientId</code> in your configuration
+You may disable Authorization Code Flow by omitting <code>clientId</code> in your configuration.
 </td>
 </tr>
 </table>
@@ -585,7 +581,7 @@ You may disable Authorization Code Flow by omitting <code>clientId</code> in you
 <h2 id="authorization_server"><a class="link" href="#authorization_server">Authorization server</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>These values can be obtained from your OIDC server when registering a new Client/application.</p>
+<p>These values can be obtained from your Microsoft Entra admin center when registering a new Client/application.</p>
 </div>
 <div class="listingblock">
 <div class="title">com.enonic.app.entraidprovider.cfg</div>
@@ -612,24 +608,18 @@ jwksUri=(string) <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Your OIDC provider may only offer an <code>Issuer URL</code>. Then, the URLs are likely accessible under <code>[Issuer URL]/.well-known/openid-configuration</code></p>
+<p>Microsoft Entra supports various endpoint URIs, depending on your setup. You may find them in your Entra admin center.</p>
 </div>
 <div class="paragraph">
-<p>Examples of OpenID Connect Discovery URL:</p>
+<p>Examples of well-known endpoints for various OpenID configuration document URIs:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Auth0</strong>: https://<code>YOUR_AUTH0_DOMAIN</code>/.well-known/openid-configuration</p>
+<p><strong>Directory (tenant) ID</strong>: <a href="https://login.microsoftonline.com/" class="bare">https://login.microsoftonline.com/</a><code>TenantID</code>/v2.0/.well-known/openid-configuration</p>
 </li>
 <li>
-<p><strong>Google</strong>: <a href="https://accounts.google.com/.well-known/openid-configuration" class="bare">https://accounts.google.com/.well-known/openid-configuration</a></p>
-</li>
-<li>
-<p><strong>Entra</strong>: <a href="https://login.microsoftonline.com/" class="bare">https://login.microsoftonline.com/</a><code>TenantID</code>/v2.0/.well-known/openid-configuration</p>
-</li>
-<li>
-<p><strong>ID-porten</strong>: <a href="https://idporten.no/.well-known/openid-configuration" class="bare">https://idporten.no/.well-known/openid-configuration</a></p>
+<p><strong>organizations</strong>: <a href="https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration" class="bare">https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration</a></p>
 </li>
 </ul>
 </div>
@@ -660,14 +650,14 @@ jwksUri=(string) <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 <div class="title">com.enonic.app.entraidprovider.cfg</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># Rules
-rules.forceEmailVerification=(true|false, required) <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+rules.allowedTenants=(space separated strings) <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>When <code>rules.forceEmailVerification</code> is <code>true</code> the claim <code>email_verified</code> (returned with the scope <code>email</code>) must exist.</td>
+<td>If you use a multi-tenant configuration, specify space-separated tenant IDs. Use <code>*</code> if you want to allow any tenant even from unknown organizations.</td>
 </tr>
 </table>
 </div>
@@ -696,7 +686,7 @@ For Authorization Code Flow, user data are synched with Enonic on every login. T
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties"># User mappings
 useUserinfo=(true|false) <i class="conum" data-value="1"></i><b>(1)</b>
-claimUsername=(string, optional, defaults to "sub") <i class="conum" data-value="2"></i><b>(2)</b>
+claimUsername=(string, optional, defaults to "oid") <i class="conum" data-value="2"></i><b>(2)</b>
 scopes=(space separated strings, defaults to "profile email") <i class="conum" data-value="3"></i><b>(3)</b>
 mappings.displayName=(string, required, defaults to @@{userinfo.preferred_username}) <i class="conum" data-value="4"></i><b>(4)</b>
 mappings.email=(string, required, defaults to @@{userinfo.email}) <i class="conum" data-value="5"></i><b>(5)</b>
@@ -711,7 +701,7 @@ defaultGroups=(space separated group keys) <i class="conum" data-value="6"></i><
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Set this if <code>useUserinfo</code> is false.<code>claimUsername</code> is important, as this represents the unique identifier that will keep the Enonic user and the OIDC user in sync.  For instance, OIDC uses <code>sub</code> as a unique, unchanging user identifier, and in Microsoft Entra this comes from the user&#8217;s <code>oid</code>.</td>
+<td>Set this if <code>useUserinfo</code> is false.<code>claimUsername</code> is important, as this represents the unique identifier that will keep the Enonic user and the OIDC user in sync.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -719,15 +709,15 @@ defaultGroups=(space separated group keys) <i class="conum" data-value="6"></i><
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Template for the <code>displayName</code> uses the format <code>@@{expression}</code>, e.g. <code>@@{userinfo.preferred_username}</code></td>
+<td>Template for the <code>displayName</code> uses the format <code>@@{expression}</code>, e.g. <code>@@{userinfo.preferred_username}</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td><code>email</code> mapping uses <code>@@{expression}</code> format, e.g. <code>@@{userinfo.email}</code></td>
+<td><code>email</code> mapping uses <code>@@{expression}</code> format, e.g. <code>@@{userinfo.email}</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td><code>defaultGroups</code> makes all users member of the specified Enonic groups. The group name must be in the format <code>group:[idprovidername]:[groupname]</code>, e.g. <code>group:myidprovider:authors</code></td>
+<td><code>defaultGroups</code> makes all users member of the specified Enonic groups. The group name must be in the format <code>group:[idprovidername]:[groupname]</code>, e.g. <code>group:myidprovider:authors</code>.</td>
 </tr>
 </table>
 </div>
@@ -845,80 +835,17 @@ endSession.additionalParameters.[0..N].value=(string)</code></pre>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>url</code>: should contain the value of <code>end_session_endpoint</code> in your OpenID Provider</td>
+<td><code>url</code>: should contain the value of <code>end_session_endpoint</code> in Entra admin center.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>idTokenHintKey</code> should optionally set the <code>id_token_hint</code> for your OpenID Provider</td>
+<td><code>idTokenHintKey</code> should optionally set the <code>id_token_hint</code> for Entra admin center.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><code>postLogoutRedirectUriKey</code> optionally set the <code>post_logout_redirect_uri</code> in your OpenID Provider</td>
+<td><code>postLogoutRedirectUriKey</code> optionally set the <code>post_logout_redirect_uri</code> in your Entra admin center.</td>
 </tr>
 </table>
-</div>
-<div class="sect2">
-<h3 id="example_values"><a class="link" href="#example_values">Example values</a></h3>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Auth0</dt>
-<dd>
-<div class="ulist">
-<ul>
-<li>
-<p>End Session URL: https://<code>YOUR_AUTH0_DOMAIN</code>/v2/logout</p>
-</li>
-<li>
-<p>Post Logout Redirect URI parameter name: <code>returnTo</code></p>
-</li>
-<li>
-<p>Additional Parameters:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>clientId = [Client ID]</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</dd>
-<dt class="hdlist1">Google</dt>
-<dd>
-<p>Not available</p>
-</dd>
-<dt class="hdlist1">Microsoft Entra</dt>
-<dd>
-<div class="ulist">
-<ul>
-<li>
-<p>End Session URL: <a href="https://login.microsoftonline.com/common/oauth2/v2.0/logout" class="bare">https://login.microsoftonline.com/common/oauth2/v2.0/logout</a></p>
-</li>
-<li>
-<p>Post Logout Redirect URI parameter name: <code>post_logout_redirect_uri</code></p>
-</li>
-</ul>
-</div>
-</dd>
-<dt class="hdlist1">ID-porten</dt>
-<dd>
-<div class="ulist">
-<ul>
-<li>
-<p>End Session URL: <a href="https://login.idporten.no/logout" class="bare">https://login.idporten.no/logout</a></p>
-</li>
-<li>
-<p>ID Token Hint parameter name: <code>id_token_hint</code></p>
-</li>
-<li>
-<p>Post Logout Redirect URI parameter name: <code>post_logout_redirect_uri</code></p>
-</li>
-</ul>
-</div>
-</dd>
-</dl>
-</div>
 </div>
 </div>
 </div>
@@ -1117,7 +1044,7 @@ idprovider.&lt;name&gt;.groupFilter.[0..N].and=  (true or false, optional)</code
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-11-27 08:55:53 UTC
+Last updated 2025-11-27 09:43:39 UTC
 </div>
 </div>
 </body>

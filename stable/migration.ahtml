@@ -435,12 +435,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article toc2 toc-right">
+<body id="migration" class="article toc2 toc-right">
 <div id="header">
 <h1>Migration from Azure ID provider</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#migrating_redirect_uri">Migrating Redirect URI</a></li>
 <li><a href="#migrating_core_configuration">Migrating Core Configuration</a>
 <ul class="sectlevel2">
 <li><a href="#tenantid">tenantId</a></li>
@@ -466,6 +467,34 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide describes how to migrate from the legacy <code>com.enonic.app.azureadidprovider.cfg</code> configuration format to the new Entra ID Provider configuration format <code>com.enonic.app.entraidprovider.cfg</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="migrating_redirect_uri"><a class="link" href="#migrating_redirect_uri">Migrating Redirect URI</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>With the new version of the ID provider, the Redirect URI format has changed to match the virtual host source path mapping.</p>
+</div>
+<div class="paragraph">
+<p>The Redirect URI now matches virtual host source path mapping. For instance, you have the following <a href="https://developer.enonic.com/docs/xp/stable/deployment/vhosts">vhost mapping</a>:</p>
+</div>
+<div class="listingblock">
+<div class="title">com.enonic.xp.web.vhost.cfg</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">mapping.myoidc.host = xp.example.com
+mapping.myoidc.source = /my-admin
+mapping.myoidc.target = /admin
+mapping.myoidc.idProvider.myoidc = default</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The correct Redirect URI should be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>https://xp.example.com/my-admin/_/idprovider/myoidc</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -508,25 +537,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><code>&lt;tenantid&gt;</code> placeholder must be replaced with your real tenant identifier.</p>
 </dd>
 </dl>
-</div>
-<div class="paragraph">
-<p>or if you plan to use a multi-tenant configuration:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.oidcWellKnownEndpoint=https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this case you also need to specify <code>allowedTenants</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">idprovider.&lt;name&gt;.allowedTenants=tenantid_1 tenantid_2 tenantid_3</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Use <code>*</code> if you want to allow any tenant even from unknown organizations. Otherwise, use space-separated tenant IDs.</p>
 </div>
 </div>
 <div class="sect2">
@@ -660,7 +670,7 @@ idprovider.azure.endSession.postLogoutRedirectUriKey=https://yourdomain.com</cod
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-11-27 08:55:53 UTC
+Last updated 2025-11-27 09:43:39 UTC
 </div>
 </div>
 </body>
