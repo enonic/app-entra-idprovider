@@ -16,6 +16,10 @@ idprovider.entra.oidcWellKnownEndpoint=https://login.microsoftonline.com/1234567
 idprovider.entra.clientId=********
 idprovider.entra.clientSecret=********
 idprovider.entra.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
+idprovider.entra.mappings.email=@@{userinfo.email}
+
+idprovider.entra.endSession.url=https://login.microsoftonline.com/<your-tenant-id>/oauth2/v2.0/logout
+idprovider.entra.endSession.postLogoutRedirectUriKey=https://yourdomain.com
 ----
 
 == Multi Tenant
