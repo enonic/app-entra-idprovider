@@ -108,7 +108,7 @@ function requestTokenWithFallback(idProviderConfig, context, code) {
                 nonce: context.nonce,
                 codeVerifier: context.codeVerifier,
                 code: code,
-                allowedTenants: idProviderConfig.allowedTenants,
+                allowedTenants: idProviderConfig.rules.allowedTenants,
                 acceptLeeway: idProviderConfig.acceptLeeway,
             });
 

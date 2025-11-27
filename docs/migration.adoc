@@ -1,7 +1,30 @@
+[#migration]
 = Migration from Azure ID provider
 :imagesdir: media/
 
 This guide describes how to migrate from the legacy `com.enonic.app.azureadidprovider.cfg` configuration format to the new Entra ID Provider configuration format `com.enonic.app.entraidprovider.cfg`.
+
+== Migrating Redirect URI
+
+With the new version of the ID provider, the Redirect URI format has changed to match the virtual host source path mapping.
+
+The Redirect URI now matches virtual host source path mapping. For instance, you have the following https://developer.enonic.com/docs/xp/stable/deployment/vhosts[vhost mapping]:
+
+.com.enonic.xp.web.vhost.cfg
+[source,properties]
+----
+mapping.myoidc.host = xp.example.com
+mapping.myoidc.source = /my-admin
+mapping.myoidc.target = /admin
+mapping.myoidc.idProvider.myoidc = default
+----
+
+The correct Redirect URI should be:
+
+[source]
+----
+https://xp.example.com/my-admin/_/idprovider/myoidc
+----
 
 == Migrating Core Configuration
 
@@ -26,22 +49,6 @@ idprovider.<name>.oidcWellKnownEndpoint=https://login.microsoftonline.com/<tenan
 ----
 
 NOTE:: `<tenantid>` placeholder must be replaced with your real tenant identifier.
-
-or if you plan to use a multi-tenant configuration:
-
-[source,properties]
-----
-idprovider.<name>.oidcWellKnownEndpoint=https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration
-----
-
-In this case you also need to specify `allowedTenants`.
-
-[source,properties]
-----
-idprovider.<name>.allowedTenants=tenantid_1 tenantid_2 tenantid_3
-----
-
-Use `*` if you want to allow any tenant even from unknown organizations. Otherwise, use space-separated tenant IDs.
 
 === logoutUrl
 

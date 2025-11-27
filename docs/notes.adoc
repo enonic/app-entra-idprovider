@@ -1,52 +1,16 @@
 = Release notes
 :imagesdir: media/
 
-== Version 4.0
+== Version 3.0
 
-=== new Redirect URI
+This is the first version of the Microsoft Entra OpenID Connect ID Provider app, but since it is a replacement of the previous Azure ID Provider app, it is released as version 3.0.
 
-This version introduces breaking changes to how the Redirect URI is constructed, which require updating the settings in your ID Service Provider.
+A migration guide from Azure ID Provider can be found <<migration#migration,here>>.
 
-Thanks to these changes, deep links will be handled correctly.
+What's new in version 3 (compared to Azure AD OIDC ID Provider)
 
-The Redirect URI now matches virtual host source path mapping. For instance, you have the following https://developer.enonic.com/docs/xp/stable/deployment/vhosts[vhost mapping]:
-
-.com.enonic.xp.web.vhost.cfg
-[source,properties]
-----
-mapping.myoidc.host = xp.example.com
-mapping.myoidc.source = /my-admin
-mapping.myoidc.target = /admin
-mapping.myoidc.idProvider.myoidc = default
-----
-
-The correct Redirect URI should be:
-
-[source]
-----
-https://xp.example.com/my-admin/_/idprovider/myoidc
-----
-
-==== Required Actions
-
-* Review your existing ID Provider settings.
-* Update callbacks to follow the new `redirectUri` format.
-* Ensure that the `redirectUri` fully matches your virtual host mapping.
-
-=== User events
-
-Starting from version 4.0, you can specify the `userEventPrefix` and `userEventMode` properties to manage user events. More details can be found <<config#, here>>.
-
-=== clientSecret
-
-Added support for multiple space-separated `clientSecret` values to follow Auth0 rotation best practices and avoid downtime from propagation delays.
-
-== Version 3.x
-
-What's new in version 3 
-
-- Starting from version 3.0, it is possible to specify `oidcWellKnownEndpoint` (Provider's OpenID Connect Discovery URL) to obtain the values for the `issuer`,`authorization_endpoint`, `token_endpoint`,  `userinfo_endpoint` and `jwks_uri`  properties.
-- User `displayName` and `email` are now automatically updated when the user logs in with Authorization Code Flow.
-- Authorization Code Flow with PKCE is now supported and used by default. Disable it (`usePkce = false`) if your provider does not support it.
-- In Authorization Code Flow, the ID Token verification is now done with the public keys from the JWKS URI (`jwksUri`).
-- The `clientId` and `clientSecret` fields are now optional in the ID Provider configuration. If you want to disable Authorization Code Flow, `clientId` should be omitted.
+- Auto login with JWT Bearer token support
+- multi-tenant organization configuration support
+- new Redirect URI with deep linking support
+- Authorization Code Flow with PKCE support
+- clientSecret rotation support to avoid downtime from propagation delays

@@ -1,4 +1,4 @@
-= OpenID Connect ID provider
+= Microsoft Entra OpenID Connect ID Provider
 :imagesdir: media/
 
 Authenticate using OIDC and JWT tokens
