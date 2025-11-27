@@ -8,7 +8,7 @@ Below are some examples of how you can configure the application.
 
 Example configuration using Google OIDC and standard form based authentication
 
-.com.enonic.app.oidcidprovider.cfg:
+.com.enonic.app.entraidprovider.cfg:
 [source,properties]
 ----
 autoinit=true
@@ -24,7 +24,7 @@ idprovider.google.defaultGroups=group:google:employees
 
 Example configuration using Auth0 with autologin supporting websockets
 
-.com.enonic.app.oidcidprovider.cfg:
+.com.enonic.app.entraidprovider.cfg:
 [source,properties]
 ----
 autoinit=true

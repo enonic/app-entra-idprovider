@@ -30,18 +30,18 @@ https://xp.example.com/my-admin/_/idprovider/myoidc
 ==== Required Actions
 
 * Review your existing ID Provider settings.
-* Update Redirect URI (aka Callback URI) to follow the new format.
-* Ensure that the Redirect URI exactly matches your virtual host mapping.
+* Update callbacks to follow the new `redirectUri` format.
+* Ensure that the `redirectUri` fully matches your virtual host mapping.
 
 === User events
 
-Starting from version 4.0, you can specify the `userEventPrefix` and `userEventMode` properties to manage user events. More details can be found <<configuration#configuration, here>>.
+Starting from version 4.0, you can specify the `userEventPrefix` and `userEventMode` properties to manage user events. More details can be found <<config#, here>>.
 
 === clientSecret
 
 Added support for multiple space-separated `clientSecret` values to follow Auth0 rotation best practices and avoid downtime from propagation delays.
 
-== Version 3.0
+== Version 3.x
 
 What's new in version 3 
 

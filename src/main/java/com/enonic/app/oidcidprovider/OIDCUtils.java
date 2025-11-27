@@ -5,8 +5,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.auth0.jwt.JWT;
@@ -28,6 +30,8 @@ public class OIDCUtils
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private static final String TENANT_ID_PLACEHOLDER = "{tenantid}";
 
     private Supplier<IdProviderConfigService> idProviderConfigServiceSupplier;
 
@@ -63,7 +67,7 @@ public class OIDCUtils
     }
 
     public ClaimSetMapper parseClaims( final String idToken, final String issuer, final String clientID, final String nonce,
-                                       final String idProviderName, final Long acceptLeeway )
+                                       final String idProviderName, final String[] allowedTenants, final Long acceptLeeway )
         throws Exception
     {
         final DecodedJWT decodedJWT = JWT.decode( idToken );
@@ -86,7 +90,22 @@ public class OIDCUtils
             verification = JWT.require( Algorithm.none() );
         }
 
-        final JWTVerifier verifier = verification.withIssuer( issuer )
+        String resolvedIssuer;
+        if ( issuer.contains( TENANT_ID_PLACEHOLDER ) )
+        {
+            final String tid = decodedJWT.getClaim( "tid" ).asString();
+            if ( allowedTenants == null || Arrays.stream( allowedTenants ).noneMatch( p -> "*".equals( p ) || Objects.equals( p, tid ) ) )
+            {
+                throw new IllegalStateException( "Invalid TenantId: " + tid );
+            }
+            resolvedIssuer = issuer.replace( TENANT_ID_PLACEHOLDER, tid );
+        }
+        else
+        {
+            resolvedIssuer = issuer;
+        }
+
+        final JWTVerifier verifier = verification.withIssuer( resolvedIssuer )
             .withAudience( clientID )
             .withClaim( "nonce", nonce )
             .acceptLeeway( acceptLeeway )

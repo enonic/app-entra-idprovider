@@ -2,7 +2,7 @@
 = Configuration
 :imagesdir: media/
 
-The application is configured via a file called `com.enonic.app.oidcidprovider.cfg`, using the properties format.
+The application is configured via a file called `com.enonic.app.entraidprovider.cfg`, using the properties format.
 
 Since the configuration is extensive, documentation has been broken down into several sections below. All available configuration options <<#all-options,listed here>>.
 
@@ -18,7 +18,7 @@ IMPORTANT: For ease of reading we omit the `idprovider.<name>.` prefix in most o
 
 The application can automatically initialize, one or more ID providers using the following configuration fields:
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # ID provider setup
@@ -35,7 +35,7 @@ idprovider.<name>.description=(string, optional) // <3>
 
 The Client parameters are mandatory for the Authorization Code Flow, but not used for Auto Login.You can obtain these values from your 3rd party OIDC server, like Google or Auth0 when creating a client/application there.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Client
@@ -55,7 +55,7 @@ NOTE: You may disable Authorization Code Flow by omitting `clientId` in your con
 
 These values can be obtained from your OIDC server when registering a new Client/application.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Authorization server
@@ -87,7 +87,7 @@ Examples of OpenID Connect Discovery URL:
 
 Additional rules enforced on user creation
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Rules
@@ -102,7 +102,7 @@ This section describes how users are mapped from OIDC to Enonic.
 
 NOTE: For Authorization Code Flow, user data are synched with Enonic on every login. The user's `displayName` and `email` will be updated from the same sources as for user creation.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # User mappings
@@ -124,7 +124,7 @@ defaultGroups=(space separated group keys) // <6>
 
 You may optionally specify additional Endpoints to fetch and store more user data in the Enonic user profile.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Additional Endpoints
@@ -145,7 +145,7 @@ This application supports automatically logging in users when the client passes 
 
 NOTE: To enable Autologin, you need to specify the `jwksUri` in the ID Provider configuration or `oidcWellKnownEndpoint` that ID Provider uses to obtain the value for the `jwksUri` automatically.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Autologin
@@ -166,15 +166,15 @@ OpenID Connect Front-Channel Logout is optional and might not be supported by yo
 There might also be another custom endpoint available that achieves the same purpose.
 The ID Provider Configuration schema tries to be dynamic enough to handle all cases.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # EndSession
 endSession.url=(string, required) // <1>
 endSession.idTokenHintKey=(string) // <2>
 endSession.postLogoutRedirectUriKey=(string) // <3>
-endSession.additionalParameters.0.key=(string)
-endSession.additionalParameters.0.value=(string)
+endSession.additionalParameters.[0..N].key=(string)
+endSession.additionalParameters.[0..N].value=(string)
 ----
 
 <1> `url`: should contain the value of `end_session_endpoint` in your OpenID Provider 
@@ -202,7 +202,7 @@ ID-porten::
 
 == User Events
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 userEventPrefix=(string, optional, defaults to "app.name")  // <1>
