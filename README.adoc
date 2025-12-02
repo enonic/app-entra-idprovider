@@ -1,4 +1,4 @@
-= Microsoft Entra Open IDConnect ID Provider
+= Microsoft Entra OpenID Connect ID Provider
 
 Authenticate your users using Microsoft Entra OIDC.
 
