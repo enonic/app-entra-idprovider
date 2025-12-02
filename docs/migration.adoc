@@ -58,14 +58,14 @@ Before:
 
 [source,properties]
 ----
-idprovider.<name>.logoutUrl=https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=https://yourdomain.com
+idprovider.<name>.logoutUrl=https://login.microsoftonline.com/<tenantid>/oauth2/v2.0/logout?post_logout_redirect_uri=https://yourdomain.com
 ----
 
 After:
 
 [source,properties]
 ----
-idprovider.<name>.endSession.url=https://login.microsoftonline.com/common/oauth2/v2.0/logout
+idprovider.<name>.endSession.url=https://login.microsoftonline.com/<tenantшd>/oauth2/v2.0/logout
 idprovider.<name>.endSession.postLogoutRedirectUriKey=https://yourdomain.com
 ----
 
@@ -126,7 +126,7 @@ autoinit=true
 idprovider.azure.tenantId= <your-tenant-id>
 idprovider.azure.clientId= <your-client-id>
 idprovider.azure.clientSecret= <your-client-secret>
-idprovider.azure.logoutUrl=https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=https://yourdomain.com
+idprovider.azure.logoutUrl=https://login.microsoftonline.com/<your-tenant-id>/oauth2/v2.0/logout?post_logout_redirect_uri=https://yourdomain.com
 idprovider.azure.createAndUpdateGroupsOnLoginFromGraphApi=true
 idprovider.azure.user.name=@@{oid}
 idprovider.azure.user.displayName=@@{given_name} @@{family_name}
@@ -150,6 +150,6 @@ idprovider.azure.claimUsername=oid
 idprovider.azure.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
 idprovider.azure.mappings.email=@@{userinfo.email}
 
-idprovider.azure.endSession.url=https://login.microsoftonline.com/common/oauth2/v2.0/logout
+idprovider.azure.endSession.url=https://login.microsoftonline.com/<your-tenant-id>/oauth2/v2.0/logout
 idprovider.azure.endSession.postLogoutRedirectUriKey=https://yourdomain.com
 ----
