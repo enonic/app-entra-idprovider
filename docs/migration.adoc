@@ -150,6 +150,6 @@ idprovider.azure.claimUsername=oid
 idprovider.azure.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
 idprovider.azure.mappings.email=@@{userinfo.email}
 
-idprovider.azure.endSession.url=https://login.microsoftonline.com/<your-tenant-id>/oauth2/v2.0/logout
+idprovider.azure.endSession.url=https://login.microsoftonline.com/common/oauth2/v2.0/logout
 idprovider.azure.endSession.postLogoutRedirectUriKey=https://yourdomain.com
 ----
