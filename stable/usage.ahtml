@@ -454,7 +454,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#vhost">Vhost</a></li>
 </ul>
 </li>
-<li><a href="#redirectioncallback_uri">Redirection/Callback URI</a></li>
+<li><a href="#redirectcallback_uri">Redirect/Callback URI</a></li>
 </ul>
 </div>
 </div>
@@ -470,7 +470,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="oidc_server"><a class="link" href="#oidc_server">OIDC server</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You will need access to an OIDC server. These are available from a range of different providers like Google, Entra, Auth0 and ID Porten, and you may run your own based on software.</p>
+<p>You will need access to an OIDC server. These are available from a range of different providers like Google, Entra, Auth0 and ID-porten, and you may run your own based on software.</p>
 </div>
 <div class="paragraph">
 <p>For your respective provider you will typically need to create a Client or application that will represent the Enonic integration. Typical values you will need later from this setup are typically:</p>
@@ -505,10 +505,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Secondly, the application requires a detailed configuration in order to communicate with the 3rd party OIDC server. Create a and tune a configuration file called <code>com.enonic.app.entraidprovider.cfg</code> and add it to your XP instance.</p>
 </div>
 <div class="paragraph">
-<p>Full details on how to configure the application is described in <a href="config.ahtml">the configuration chapter</a>.</p>
+<p>Full details on how to configure the application is described in <a href="config.ahtml#configuration">the configuration chapter</a>.</p>
 </div>
 <div class="paragraph">
-<p>You may also find our <a href="examples.ahtml">configuration examples</a> useful.</p>
+<p>You may also find our <a href="examples.ahtml#examples">configuration examples</a> useful.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Your Enonic ID provider should automatically be create once you add your configuration file
+Your Enonic ID provider should automatically be created once you add your configuration file
 </td>
 </tr>
 </table>
@@ -525,7 +525,7 @@ Your Enonic ID provider should automatically be create once you add your configu
 <div class="sect2">
 <h3 id="manual_setup"><a class="link" href="#manual_setup">Manual setup</a></h3>
 <div class="paragraph">
-<p>If you disable <code>autoInit</code>, the ID providers may manually by created by following these steps:</p>
+<p>If you disable <code>autoInit</code>, the ID providers may manually be created by following these steps:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -553,12 +553,12 @@ Your Enonic ID provider should automatically be create once you add your configu
 <h2 id="mapping"><a class="link" href="#mapping">Mapping</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Finally, you will need to map the ID provider to an Enonic ingress/vhost where it will be used - i.e to enable login for the XP admin console, a website or an API.</p>
+<p>Finally, you will need to map the ID provider to an Enonic ingress/vhost where it will be used - i.e. to enable login for the XP admin console, a website or an API.</p>
 </div>
 <div class="sect2">
 <h3 id="ingress"><a class="link" href="#ingress">Ingress</a></h3>
 <div class="paragraph">
-<p>When using the self service cloud, simply edit the Ingress, then select the ID provider you created above i.e. <code>myoidcprovider</code>.</p>
+<p>When using the self-service cloud, simply edit the Ingress, then select the ID provider you created above i.e. <code>myoidcprovider</code>.</p>
 </div>
 <div class="paragraph">
 <p>Save, and the change should take effect shortly.</p>
@@ -600,13 +600,13 @@ mapping.example.idProvider.myentraprovider = default</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="redirectioncallback_uri"><a class="link" href="#redirectioncallback_uri">Redirection/Callback URI</a></h2>
+<h2 id="redirectcallback_uri"><a class="link" href="#redirectcallback_uri">Redirect/Callback URI</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Finally, if you want to use form-based authenticated (aka Authorization Code Flow), End-Users will be redirected back to your Enonic endpoint from the authorization server. For security reasons you will need to register this URL in the configuration of your OIDC providers Client/Application.</p>
 </div>
 <div class="paragraph">
-<p>The callback URL depends on your Enonic Vhost/Ingress and the name of the ID provider you want to use. It typically has the following format: <code>[host+sourcepath]/_/idprovider/[idprovidername]</code>, where <code>idprovidername</code> must match the ID provider registered in Enonic XP.</p>
+<p>The callback URL depends on your Enonic Vhost/Ingress and the name of the ID Provider you want to use. It typically has the following format: <code>[host+sourcepath]/_/idprovider/[idprovidername]</code>, where <code>idprovidername</code> must match the ID provider registered in Enonic XP.</p>
 </div>
 <div class="dlist">
 <dl>
@@ -616,7 +616,7 @@ mapping.example.idProvider.myentraprovider = default</code></pre>
 </dd>
 <dt class="hdlist1">Example for admin</dt>
 <dd>
-<p><a href="https://xp.example.com/admin/tool/_/idprovider/myoidcprovider" class="bare">https://xp.example.com/admin/tool/_/idprovider/myoidcprovider</a></p>
+<p><a href="https://www.example.com/admin/_/idprovider/myoidcprovider" class="bare">https://www.example.com/admin/_/idprovider/myoidcprovider</a></p>
 </dd>
 </dl>
 </div>
@@ -625,7 +625,7 @@ mapping.example.idProvider.myentraprovider = default</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-12-02 10:02:44 UTC
+Last updated 2025-12-22 12:33:09 UTC
 </div>
 </div>
 </body>
