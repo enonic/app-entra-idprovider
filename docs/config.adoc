@@ -2,15 +2,15 @@
 = Configuration
 :imagesdir: media/
 
-The application is configured via a file called `com.enonic.app.oidcidprovider.cfg`, using the properties format.
+The application is configured via a file called `com.enonic.app.entraidprovider.cfg`, using the properties format.
 
 Since the configuration is extensive, documentation has been broken down into several sections below. All available configuration options <<#all-options,listed here>>.
 
 == General
 
-Enonic uses ID providers to provide auth for various endpoints such as Admin/websites and APIs. This application may back multiple ID providers, meaning you may for instance support Google, Entra, and Auth0 - and even multiple ID providers for a single OIDC service.
+Enonic uses ID providers to provide auth for various endpoints such as Admin/websites and APIs. This application is a based on https://developer.enonic.com/docs/oidc-idprovider/stable[OpenID Connect ID provider] and supports most of its features. At the same time it is primarily focused on Microsoft Entra as the OIDC provider, and adds support fetching groups from Microsoft Graph API.
 
-As such, most properties are prefixed with a named ID Provider i.e. `idprovider.[idprovidername].[configkey] = [value]`, where `idprovidername` is a unique name matching the ID provider in Enonic XP.
+This application may back multiple ID providers, most properties are prefixed with a named ID Provider i.e. `idprovider.[idprovidername].[configkey] = [value]`, where `idprovidername` is a unique name matching the ID provider in Enonic XP.
 
 IMPORTANT: For ease of reading we omit the `idprovider.<name>.` prefix in most of the documentation below. See the <<examples#examples,examples>> for a complete setup.
 
@@ -18,7 +18,7 @@ IMPORTANT: For ease of reading we omit the `idprovider.<name>.` prefix in most o
 
 The application can automatically initialize, one or more ID providers using the following configuration fields:
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # ID provider setup
@@ -33,9 +33,9 @@ idprovider.<name>.description=(string, optional) // <3>
 
 == Client
 
-The Client parameters are mandatory for the Authorization Code Flow, but not used for Auto Login.You can obtain these values from your 3rd party OIDC server, like Google or Auth0 when creating a client/application there.
+The Client parameters are mandatory for the Authorization Code Flow, but not used for Auto Login.You can obtain these values from Microsoft Entra admin center when creating a client/application there.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Client
@@ -44,18 +44,18 @@ clientSecret=(space separated strings) // <2>
 method=(post|basic|jwt)// <3>
 usePkce=(true|false) // <4>
 ----
-<1> Client ID you obtain from your OIDC server
-<2> Client Secret you obtain from your OIDC server. A space-separated list of secrets used for rotation. The new secret can be added as a fallback to the old one.
+<1> Client ID you obtain from your Microsoft Entra admin center.
+<2> Client Secret you obtain from Microsoft Entra admin center. A space-separated list of secrets used for rotation. The new secret can be added as a fallback to the old one.
 <3> Optionally specify the `method` for how client ID and client secret will be passed to the OIDC server. The values correspond to `client_secret_basic`, `client_secret_post` and `private_key_jwt` methods, respectively.
 <4> `usePkce` - If set to `false`, the app will not use PKCE for the Authorization Code Flow.
 
-NOTE: You may disable Authorization Code Flow by omitting `clientId` in your configuration
+NOTE: You may disable Authorization Code Flow by omitting `clientId` in your configuration.
 
 == Authorization server
 
-These values can be obtained from your OIDC server when registering a new Client/application.
+These values can be obtained from your Microsoft Entra admin center when registering a new Client/application.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Authorization server
@@ -71,14 +71,13 @@ jwksUri=(string) // <3>
 + 
 [TIP] 
 ====
-Your OIDC provider may only offer an `Issuer URL`. Then, the URLs are likely accessible under `[Issuer URL]/.well-known/openid-configuration`
+Microsoft Entra supports various endpoint URIs, depending on your setup. You may find them in your Entra admin center.
 
-Examples of OpenID Connect Discovery URL:
+Examples of well-known endpoints for various OpenID configuration document URIs:
 
-- **Auth0**: https://`YOUR_AUTH0_DOMAIN`/.well-known/openid-configuration
-- **Google**: https://accounts.google.com/.well-known/openid-configuration
-- **Entra**: https://login.microsoftonline.com/`TenantID`/v2.0/.well-known/openid-configuration
-- **ID-porten**: https://idporten.no/.well-known/openid-configuration
+- **Directory (tenant) ID**: https://login.microsoftonline.com/`TenantID`/v2.0/.well-known/openid-configuration
+- **organizations**: https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration
+
 ====
 <2> `userinfoUrl` if provided, the app will use this URL to retrieve the user claims to create/update the User in Enonic. (When `useUserinfo` is set to `false` this value is not used)
 <3> `jwksUri` - JSON Web Key Set (JWKS) - The app will use this URL to retrieve the public keys used to verify the signature of the Bearer Token during Auto Login, and ID Token in the Auth Code Flow. For Autologin flow, this property must exist.
@@ -87,14 +86,15 @@ Examples of OpenID Connect Discovery URL:
 
 Additional rules enforced on user creation
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Rules
-rules.forceEmailVerification=(true|false, required) // <1>
+rules.allowedTenants=(space separated strings) // <1>
 ----
 
-<1> When `rules.forceEmailVerification` is `true` the claim `email_verified` (returned with the scope `email`) must exist.
+<1> If you use a multi-tenant configuration, specify space-separated tenant IDs. Use `*` if you want to allow any tenant even from unknown organizations.
+
 
 == User mappings
 
@@ -102,29 +102,29 @@ This section describes how users are mapped from OIDC to Enonic.
 
 NOTE: For Authorization Code Flow, user data are synched with Enonic on every login. The user's `displayName` and `email` will be updated from the same sources as for user creation.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # User mappings
 useUserinfo=(true|false) // <1>
-claimUsername=(string, optional, defaults to "sub") // <2>
+claimUsername=(string, optional, defaults to "oid") // <2>
 scopes=(space separated strings, defaults to "profile email") // <3>
 mappings.displayName=(string, required, defaults to @@{userinfo.preferred_username}) // <4>
 mappings.email=(string, required, defaults to @@{userinfo.email}) // <5>
 defaultGroups=(space separated group keys) // <6>
 ----
 <1> When `useUserinfo` is set to `false` the claims from `userinfoUrl` will be ignored, and you must specify your own claims below.
-<2> Set this if `useUserinfo` is false.`claimUsername` is important, as this represents the unique identifier that will keep the Enonic user and the OIDC user in sync.  For instance, OIDC uses `sub` as a unique, unchanging user identifier, and in Microsoft Entra this comes from the user's `oid`.
+<2> Set this if `useUserinfo` is false.`claimUsername` is important, as this represents the unique identifier that will keep the Enonic user and the OIDC user in sync.
 <3> Set this if `useUserinfo` is false. Defines which scopes to fetch from the OIDC server.
-<4> Template for the `displayName` uses the format `+@@{expression}+`, e.g. `@@{userinfo.preferred_username}`
-<5> `email` mapping uses `+@@{expression}+` format, e.g. `@@{userinfo.email}`
-<6> `defaultGroups` makes all users member of the specified Enonic groups. The group name must be in the format `group:[idprovidername]:[groupname]`, e.g. `group:myidprovider:authors`
+<4> Template for the `displayName` uses the format `+@@{expression}+`, e.g. `@@{userinfo.preferred_username}`.
+<5> `email` mapping uses `+@@{expression}+` format, e.g. `@@{userinfo.email}`.
+<6> `defaultGroups` makes all users member of the specified Enonic groups. The group name must be in the format `group:[idprovidername]:[groupname]`, e.g. `group:myidprovider:authors`.
 
 == Additional endpoints
 
 You may optionally specify additional Endpoints to fetch and store more user data in the Enonic user profile.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Additional Endpoints
@@ -145,7 +145,7 @@ This application supports automatically logging in users when the client passes 
 
 NOTE: To enable Autologin, you need to specify the `jwksUri` in the ID Provider configuration or `oidcWellKnownEndpoint` that ID Provider uses to obtain the value for the `jwksUri` automatically.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # Autologin
@@ -166,43 +166,24 @@ OpenID Connect Front-Channel Logout is optional and might not be supported by yo
 There might also be another custom endpoint available that achieves the same purpose.
 The ID Provider Configuration schema tries to be dynamic enough to handle all cases.
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 # EndSession
 endSession.url=(string, required) // <1>
 endSession.idTokenHintKey=(string) // <2>
 endSession.postLogoutRedirectUriKey=(string) // <3>
-endSession.additionalParameters.0.key=(string)
-endSession.additionalParameters.0.value=(string)
+endSession.additionalParameters.[0..N].key=(string)
+endSession.additionalParameters.[0..N].value=(string)
 ----
 
-<1> `url`: should contain the value of `end_session_endpoint` in your OpenID Provider 
-<2> `idTokenHintKey` should optionally set the `id_token_hint` for your OpenID Provider 
-<3> `postLogoutRedirectUriKey` optionally set the `post_logout_redirect_uri` in your OpenID Provider
-
-=== Example values
-
-Auth0::
-* End Session URL: https://`YOUR_AUTH0_DOMAIN`/v2/logout
-* Post Logout Redirect URI parameter name: `returnTo`
-* Additional Parameters:
-** clientId = [Client ID]
-
-Google:: Not available
-
-Microsoft Entra::
-* End Session URL: https://login.microsoftonline.com/common/oauth2/v2.0/logout
-* Post Logout Redirect URI parameter name: `post_logout_redirect_uri`
-
-ID-porten::
-* End Session URL: https://login.idporten.no/logout
-* ID Token Hint parameter name: `id_token_hint`
-* Post Logout Redirect URI parameter name: `post_logout_redirect_uri`
+<1> `url`: should contain the value of `end_session_endpoint` in Entra admin center.
+<2> `idTokenHintKey` should optionally set the `id_token_hint` for Entra admin center.
+<3> `postLogoutRedirectUriKey` optionally set the `post_logout_redirect_uri` in your Entra admin center.
 
 == User Events
 
-.com.enonic.app.oidcidprovider.cfg
+.com.enonic.app.entraidprovider.cfg
 [source,properties]
 ----
 userEventPrefix=(string, optional, defaults to "app.name")  // <1>
@@ -214,15 +195,72 @@ userEventMode=(off|local|distributed, optional, defaults to "local")  // <2>
 By default, the application name is used as the prefix. For instance, the login event will look like `<userEventPrefix>.user.login`. To listen for this event, use `custom.<userEventPrefix>.user.login`.
 <2> `userEventMode` allows you to disable user events or specify whether they should be distributed in the cluster or locally.
 
+== Fetch groups from Microsoft Graph API
+
+.com.enonic.app.entraidprovider.cfg
+[source,properties]
+----
+createAndUpdateGroupsOnLoginFromGraphApi=  (true or false, optional, defaults to "false") // <1>
+pageSize=  (number, optional) // <2>
+groupPrefix=  (string, optional, defaults to "azure-ad-") // <3>
+
+# Configures the proxy settings for communication with the Microsoft Graph API
+proxy.host=  (string, required) // <4>
+proxy.port=  (number between 0 and 65535, optional) // <5>
+proxy.user=  (string, optional)  // <6>
+proxy.password=  (string, optional)  // <7>
+
+# Group Filter. Allows you to filter which user groups are imported from Microsoft Graph API.
+# To use this, you must define an array of rules. The array is zero-indexed (starts at 0).
+groupFilter.[0..N].groupProperty=  (string, required) // <8>
+groupFilter.[0..N].regexp=  (string, required) // <9>
+groupFilter.[0..N].and=  (true or false, optional) // <10>
+
+----
+
+<1> Create and update groups via Graph API. Automatically create and update groups upon user login, based on data returned from the Graph API. To sync groups from the Graph API to Enonic XP, you must grant the `Directory.Read.All` and `Directory.AccessAsUser.All` API permissions.
+<2> The page size for responses from the Graph API. If the result set exceeds this limit, the Graph API returns an `_@odata.nextLink_` property along with the first page of results.
+<3> Allows you to specify a prefix for Enonic XP groups to which the user will be added.
+<4> The proxy server hostname.
+<5> The proxy server port number.
+<6> The username for proxy authentication.
+<7> The password for proxy authentication.
+<8> The name of the property on the Graph API group object to check against. This must be a valid property returned by the Graph API (e.g., properties found in the MemberOf response). https://docs.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties[List of properties] (e.g., `description`, `displayName`, `id`, `visibility`).
+<9> The Regular Expression to apply to the groupProperty.
+<10> If set to true, this rule is combined with the previous filter in the array using an `AND` operator.
+
+=== Group filter example
+
+.com.enonic.app.entraidprovider.cfg
+[source,properties]
+----
+idprovider.myidp.groupFilter.0.groupProperty=description
+idprovider.myidp.groupFilter.0.regexp=\\\$XP\\\$
+idprovider.myidp.groupFilter.0.and=false
+
+idprovider.myidp.groupFilter.1.groupProperty=displayName
+idprovider.myidp.groupFilter.1.regexp=^XP
+idprovider.myidp.groupFilter.1.and=false
+
+idprovider.myidp.groupFilter.2.groupProperty=id
+idprovider.myidp.groupFilter.2.regexp=12345-12345-12345-12345
+idprovider.myidp.groupFilter.2.and=false
+
+idprovider.myidp.groupFilter.3.groupProperty=visibility
+idprovider.myidp.groupFilter.3.regexp=Public
+idprovider.myidp.groupFilter.3.and=true
+
+----
+
 [#all-options]
 == All options
 
 All available configuration options
 
-.com.enonic.app.oidcidprovider.cfg:
+.com.enonic.app.entraidprovider.cfg:
 [source,properties]
 ----
-# IDprovider setup
+# ID provider setup
 autoinit=(true | false)
 idprovider.<name>.displayName=(string)
 idprovider.<name>.description=(string)
@@ -231,6 +269,7 @@ idprovider.<name>.description=(string)
 idprovider.<name>.clientId=(string)
 idprovider.<name>.clientSecret=(string)
 idprovider.<name>.method=(post|basic|jwt)
+idprovider.<name>.usePkce=(true|false)
 
 # Authorization server
 idprovider.<name>.oidcWellKnownEndpoint=(string)
@@ -239,10 +278,9 @@ idprovider.<name>.authorizationUrl=(string)
 idprovider.<name>.tokenUrl=(string)
 idprovider.<name>.userinfoUrl=(string)
 idprovider.<name>.jwksUri=(string)
-idprovider.<name>.usePkce=(true|false)
 
 # Rules
-idprovider.<name>.rules.forceEmailVerification=(true|false)
+idprovider.<name>.rules.allowedTenants=(space separated strings, or * for all)
 
 # User mappings
 idprovider.<name>.useUserinfo=(true|false)
@@ -272,4 +310,16 @@ idprovider.<name>.endSession.idTokenHintKey=(string)
 idprovider.<name>.endSession.postLogoutRedirectUriKey=(string)
 idprovider.<name>.endSession.additionalParameters.0.key=(string, required)
 idprovider.<name>.endSession.additionalParameters.0.value=(string, required)
+
+# Fetch groups from Microsoft Graph API
+idprovider.<name>.createAndUpdateGroupsOnLoginFromGraphApi=  (true or false, optional, defaults to "false")
+idprovider.<name>.pageSize=  (number, optional)
+idprovider.<name>.groupPrefix=  (string, optional, defaults to "azure-ad-")
+idprovider.<name>.proxy.host=  (string, required)
+idprovider.<name>.proxy.port=  (number between 0 and 65535, optional)
+idprovider.<name>.proxy.user=  (string, optional)
+idprovider.<name>.proxy.password=  (string, optional)
+idprovider.<name>.groupFilter.[0..N].groupProperty=  (string, required)
+idprovider.<name>.groupFilter.[0..N].regexp=  (string, required)
+idprovider.<name>.groupFilter.[0..N].and=  (true or false, optional)
 ----

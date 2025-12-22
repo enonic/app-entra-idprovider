@@ -1,6 +1,6 @@
-= OpenID Connect ID Provider
+= Microsoft Entra OpenID Connect ID Provider
 
-Authenticate your users using OIDC.
+Authenticate your users using Microsoft Entra OIDC.
 
 == Documentation
 

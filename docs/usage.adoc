@@ -19,7 +19,7 @@ On your Enonic server, start by installing the application to your Enonic instan
 
 == Configure
 
-Secondly, the application requires a detailed configuration in order to communicate with the 3rd party OIDC server. Create a and tune a configuration file called `com.enonic.app.oidcidprovider.cfg` and add it to your XP instance.
+Secondly, the application requires a detailed configuration in order to communicate with the 3rd party OIDC server. Create a and tune a configuration file called `com.enonic.app.entraidprovider.cfg` and add it to your XP instance.
 
 Full details on how to configure the application is described in <<config#configuration, the configuration chapter>>.
 
@@ -39,7 +39,7 @@ image:idprovider-name.png[title="ID provider name is found/set in the name field
 +
 The ID provider name cannot be changed later, so choose wisely before saving.
 + 
-. For the "Application" field, select the "OIDC ID Provider" app you installed earlier.
+. For the "Application" field, select the "Entra ID Provider" app you installed earlier.
 
 
 == Mapping
@@ -65,10 +65,10 @@ Edit the XP configuration file `com.enonic.xp.web.vhost.cfg`, and map the id pro
 mapping.example.host = xp.example.com
 mapping.example.source = /
 mapping.example.target = /admin
-mapping.example.idProvider.myoidcprovider = default
+mapping.example.idProvider.myentraprovider = default
 ----
 
-NOTE: `myoidcprovider` in the example above must match the name you used in the ID provider configuration.
+NOTE: `myentraprovider` in the example above must match the name you used in the ID provider configuration.
 
 == Redirect/Callback URI
 
@@ -76,7 +76,7 @@ Finally, if you want to use form-based authenticated (aka Authorization Code Flo
 
 The callback URL depends on your Enonic Vhost/Ingress and the name of the ID Provider you want to use. It typically has the following format: `[host+sourcepath]/_/idprovider/[idprovidername]`, where `idprovidername` must match the ID provider registered in Enonic XP.
 
-Example for a site:: https://www.example.com/_/idprovider/myoidcprovider
+Example for a site:: https://xp.example.com/_/idprovider/myoidcprovider
 
 Example for admin:: https://www.example.com/admin/_/idprovider/myoidcprovider
 

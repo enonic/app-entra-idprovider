@@ -4,35 +4,33 @@
 
 Below are some examples of how you can configure the application.
 
-== Google
+== Single Tenant
 
-Example configuration using Google OIDC and standard form based authentication
+Example configuration using Single Directory (Tenant)
 
-.com.enonic.app.oidcidprovider.cfg:
+.com.enonic.app.entraidprovider.cfg:
 [source,properties]
 ----
 autoinit=true
-idprovider.google.oidcWellKnownEndpoint=https://accounts.google.com/.well-known/openid-configuration
-idprovider.google.clientId=********.apps.googleusercontent.com
-idprovider.google.clientSecret=********
-idprovider.google.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
-idprovider.google.rules.forceEmailVerification=true
-idprovider.google.defaultGroups=group:google:employees
+idprovider.entra.oidcWellKnownEndpoint=https://login.microsoftonline.com/12345678-1234-1234-1234-123456789abc/v2.0/.well-known/openid-configuration
+idprovider.entra.clientId=********
+idprovider.entra.clientSecret=********
+idprovider.entra.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
 ----
 
-== Auth0
+== Multi Tenant
 
-Example configuration using Auth0 with autologin supporting websockets
+Example configuration using Single Directory (Tenant)
 
-.com.enonic.app.oidcidprovider.cfg:
+.com.enonic.app.entraidprovider.cfg:
 [source,properties]
 ----
 autoinit=true
-idprovider.auth0.oidcWellKnownEndpoint=https://auth.enonic-qa.com/.well-known/openid-configuration
-idprovider.auth0.rules.forceEmailVerification=true
-idprovider.auth0.autoLogin.wsHeader=true
-idprovider.auth0.autoLogin.allowedAudience=https://service.example.com/api
-idprovider.auth0.mappings.displayName=@@{userinfo.name}
+idprovider.entra.oidcWellKnownEndpoint=https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration
+idprovider.entra.clientId=********
+idprovider.entra.clientSecret=********
+idprovider.entra.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
+idprovider.entra.rules.allowedTenants=12345678-1234-1234-1234-123456789abc 87654321-4321-4321-4321-cba987654321
 ----
 
 
