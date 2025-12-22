@@ -5,7 +5,7 @@ Follow these steps to start using the ID provider
 
 == OIDC server
 
-You will need access to an OIDC server. These are available from a range of different providers like Google, Entra, Auth0 and ID Porten, and you may run your own based on software.
+You will need access to an OIDC server. These are available from a range of different providers like Google, Entra, Auth0 and ID-porten, and you may run your own based on software.
 
 For your respective provider you will typically need to create a Client or application that will represent the Enonic integration. Typical values you will need later from this setup are typically:
 
@@ -21,16 +21,16 @@ On your Enonic server, start by installing the application to your Enonic instan
 
 Secondly, the application requires a detailed configuration in order to communicate with the 3rd party OIDC server. Create a and tune a configuration file called `com.enonic.app.entraidprovider.cfg` and add it to your XP instance.
 
-Full details on how to configure the application is described in <<config#, the configuration chapter>>.
+Full details on how to configure the application is described in <<config#configuration, the configuration chapter>>.
 
-You may also find our <<examples#, configuration examples>> useful.
+You may also find our <<examples#examples, configuration examples>> useful.
 
-NOTE: Your Enonic ID provider should automatically be create once you add your configuration file
+NOTE: Your Enonic ID provider should automatically be created once you add your configuration file
 
 
 === Manual setup
 
-If you disable `autoInit`, the ID providers may manually by created by following these steps:
+If you disable `autoInit`, the ID providers may manually be created by following these steps:
 
 . From Enonic admin console: `XP menu` -> `Users` -> `New` -> `ID provider` https://www.youtube.com/watch?v=QZpBdsDlkA0[admin tool "Users"]
 . Fill in the `displayName` field, which generates the *ID provider name* just below
@@ -44,10 +44,10 @@ The ID provider name cannot be changed later, so choose wisely before saving.
 
 == Mapping
 
-Finally, you will need to map the ID provider to an Enonic ingress/vhost where it will be used - i.e to enable login for the XP admin console, a website or an API.
+Finally, you will need to map the ID provider to an Enonic ingress/vhost where it will be used - i.e. to enable login for the XP admin console, a website or an API.
 
 === Ingress
-When using the self service cloud, simply edit the Ingress, then select the ID provider you created above i.e. `myoidcprovider`.
+When using the self-service cloud, simply edit the Ingress, then select the ID provider you created above i.e. `myoidcprovider`.
 
 Save, and the change should take effect shortly.
 
@@ -70,15 +70,15 @@ mapping.example.idProvider.myentraprovider = default
 
 NOTE: `myentraprovider` in the example above must match the name you used in the ID provider configuration.
 
-== Redirection/Callback URI
+== Redirect/Callback URI
 
 Finally, if you want to use form-based authenticated (aka Authorization Code Flow), End-Users will be redirected back to your Enonic endpoint from the authorization server. For security reasons you will need to register this URL in the configuration of your OIDC providers Client/Application.
 
-The callback URL depends on your Enonic Vhost/Ingress and the name of the ID provider you want to use. It typically has the following format: `[host+sourcepath]/_/idprovider/[idprovidername]`, where `idprovidername` must match the ID provider registered in Enonic XP.
+The callback URL depends on your Enonic Vhost/Ingress and the name of the ID Provider you want to use. It typically has the following format: `[host+sourcepath]/_/idprovider/[idprovidername]`, where `idprovidername` must match the ID provider registered in Enonic XP.
 
 Example for a site:: https://xp.example.com/_/idprovider/myoidcprovider
 
-Example for admin:: https://xp.example.com/admin/tool/_/idprovider/myoidcprovider
+Example for admin:: https://www.example.com/admin/_/idprovider/myoidcprovider
 
 
 

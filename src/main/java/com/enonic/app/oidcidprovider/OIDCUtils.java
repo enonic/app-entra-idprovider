@@ -15,21 +15,21 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.Verification;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.enonic.app.oidcidprovider.handler.IdProviderConfigService;
+import com.enonic.app.oidcidprovider.jwt.JwtUtil;
 import com.enonic.app.oidcidprovider.jwt.RSAAlgorithmProvider;
-import com.enonic.app.oidcidprovider.mapper.ClaimSetMapper;
+import com.enonic.app.oidcidprovider.mapper.MapMapper;
 import com.enonic.xp.script.bean.BeanContext;
 import com.enonic.xp.script.bean.ScriptBean;
+import com.enonic.xp.script.serializer.MapSerializable;
 
 public class OIDCUtils
     implements ScriptBean
 {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final Base64.Encoder B64URL_NOPAD = Base64.getUrlEncoder().withoutPadding();
 
     private static final String TENANT_ID_PLACEHOLDER = "{tenantid}";
 
@@ -44,14 +44,12 @@ public class OIDCUtils
     {
         final byte[] bytes = new byte[32];
         SECURE_RANDOM.nextBytes( bytes );
-        return Base64.getUrlEncoder().withoutPadding().encodeToString( bytes );
+        return B64URL_NOPAD.encodeToString( bytes );
     }
 
     public String generateChallenge( String verifier )
     {
-        return Base64.getUrlEncoder()
-            .withoutPadding()
-            .encodeToString( sha256().digest( verifier.getBytes( StandardCharsets.ISO_8859_1 ) ) );
+        return B64URL_NOPAD.encodeToString( sha256().digest( verifier.getBytes( StandardCharsets.ISO_8859_1 ) ) );
     }
 
     public MessageDigest sha256()
@@ -66,7 +64,7 @@ public class OIDCUtils
         }
     }
 
-    public ClaimSetMapper parseClaims( final String idToken, final String issuer, final String clientID, final String nonce,
+    public MapSerializable parseClaims( final String idToken, final String issuer, final String clientID, final String nonce,
                                        final String idProviderName, final String[] allowedTenants, final Long acceptLeeway )
         throws Exception
     {
@@ -74,12 +72,11 @@ public class OIDCUtils
 
         final RSAAlgorithmProvider rsaAlgorithmProvider = idProviderConfigServiceSupplier.get().getAlgorithmProvider( idProviderName );
 
-        final Verification verification;
+        final Algorithm algorithm;
         if ( rsaAlgorithmProvider != null )
         {
             // We only support RS256, RS384 and RS512 algorithms
-            final Algorithm algorithm = rsaAlgorithmProvider.getAlgorithm( decodedJWT.getAlgorithm() );
-            verification = JWT.require( algorithm );
+            algorithm = rsaAlgorithmProvider.getAlgorithm( decodedJWT.getAlgorithm() );
         }
         else
         {
@@ -87,7 +84,7 @@ public class OIDCUtils
             // But, according to OIDC Specification https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation
             // TLS server validation MAY be used to validate the issuer in place of checking the token signature
             // auth0.jwt library requires algorithm to be set, so we use none() algorithm as a workaround - to verify claims only
-            verification = JWT.require( Algorithm.none() );
+            algorithm = Algorithm.none();
         }
 
         String resolvedIssuer;
@@ -105,13 +102,14 @@ public class OIDCUtils
             resolvedIssuer = issuer;
         }
 
-        final JWTVerifier verifier = verification.withIssuer( resolvedIssuer )
+        final JWTVerifier verifier = JWT.require( algorithm )
+            .withIssuer( resolvedIssuer )
             .withAudience( clientID )
             .withClaim( "nonce", nonce )
             .acceptLeeway( acceptLeeway )
             .build();
 
-        final String decodedPayload = new String( Base64.getDecoder().decode( decodedJWT.getPayload() ), StandardCharsets.UTF_8 );
+        final Map<String, Object> decodedPayload = JwtUtil.parsePayload( decodedJWT.getPayload() );
 
         if ( rsaAlgorithmProvider != null )
         {
@@ -122,9 +120,7 @@ public class OIDCUtils
             verifier.verify( JWT.create().withPayload( decodedPayload ).sign( Algorithm.none() ) );
         }
 
-        Map<String, Object> claims = MAPPER.readValue( decodedPayload, Map.class );
-
-        return ClaimSetMapper.create().claimMap( claims ).build();
+        return new MapMapper( decodedPayload );
     }
 
     public String generateJwt( final Map<String, Object> message, final String clientSecret )
