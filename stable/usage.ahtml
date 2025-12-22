@@ -470,7 +470,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="oidc_server"><a class="link" href="#oidc_server">OIDC server</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You will need access to an OIDC server. These are available from a range of different providers like Google, Entra, Auth0 and ID-porten, and you may run your own based on software.</p>
+<p>You will need access to an OIDC server. This provider is customized to work best with Microsoft Entra ID OIDC Server.</p>
 </div>
 <div class="paragraph">
 <p>For your respective provider you will typically need to create a Client or application that will represent the Enonic integration. Typical values you will need later from this setup are typically:</p>
@@ -502,7 +502,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="configure"><a class="link" href="#configure">Configure</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Secondly, the application requires a detailed configuration in order to communicate with the 3rd party OIDC server. Create a and tune a configuration file called <code>com.enonic.app.entraidprovider.cfg</code> and add it to your XP instance.</p>
+<p>Secondly, the application requires a detailed configuration in order to communicate with the Microsoft Entra ID OIDC server. Create a and tune a configuration file called <code>com.enonic.app.entraidprovider.cfg</code> and add it to your XP instance.</p>
 </div>
 <div class="paragraph">
 <p>Full details on how to configure the application is described in <a href="config.ahtml#configuration">the configuration chapter</a>.</p>
@@ -625,7 +625,7 @@ mapping.example.idProvider.myentraprovider = default</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-12-22 12:33:09 UTC
+Last updated 2025-12-22 12:43:13 UTC
 </div>
 </div>
 </body>
