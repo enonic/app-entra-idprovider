@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.26">
-<title>Release notes</title>
+<title>Microsoft Entra OpenID Connect ID Provider</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,61 +437,62 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-right">
 <div id="header">
-<h1>Release notes</h1>
+<h1>Microsoft Entra OpenID Connect ID Provider</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#version_4_0">Version 4.0</a></li>
-<li><a href="#version_3_0">Version 3.0</a></li>
+<li><a href="#intro">Intro</a></li>
+<li><a href="#how_it_works">How it works</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="version_4_0"><a class="link" href="#version_4_0">Version 4.0</a></h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Upgraded to XP8.</p>
+<p>Authenticate using OIDC and JWT tokens</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="version_3_0"><a class="link" href="#version_3_0">Version 3.0</a></h2>
+<h2 id="intro"><a class="link" href="#intro">Intro</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This is the first version of the Microsoft Entra OpenID Connect ID Provider app, but since it is a replacement of the previous Azure ID Provider app, it is released as version 3.0.</p>
+<p>This application will act as an OIDC Relying Party for your Enonic XP instance. It verifies the identity of End-Users based on your OIDC Authorization Server or JWT token.</p>
 </div>
 <div class="paragraph">
-<p>A migration guide from Azure ID Provider can be found <a href="migration.ahtml#migration">here</a>.</p>
+<p>Browser-based visitors are redirected to the Authentication Server, and once successfully authenticated, a user will be created in Enonic XP.</p>
 </div>
 <div class="paragraph">
-<p>What&#8217;s new in version 3 (compared to Azure AD OIDC ID Provider)</p>
+<p>API or machine-based clients can authenticate using OIDC JWT tokens.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how_it_works"><a class="link" href="#how_it_works">How it works</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The ID provider supports two different approaches:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Auto login with JWT Bearer token support</p>
+<p>Authorization Code Flow using <code>client_secret_post</code>, <code>client_secret_basic</code> or <code>client_secret_jwt</code> methods.</p>
 </li>
 <li>
-<p>multi-tenant organization configuration support</p>
-</li>
-<li>
-<p>new Redirect URI with deep linking support</p>
-</li>
-<li>
-<p>Authorization Code Flow with PKCE support</p>
-</li>
-<li>
-<p>clientSecret rotation support to avoid downtime from propagation delays</p>
+<p>Auto login based on Authorization header with a JWT Bearer Token for Stateless Authentication.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>It is possible to mix the two authentication methods for a single domain/vhost.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-22 12:41:09 UTC
+Last updated 2026-07-22 12:41:42 UTC
 </div>
 </div>
 </body>

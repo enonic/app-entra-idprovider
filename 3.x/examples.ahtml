@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.26">
-<title>Release notes</title>
+<title>Configuration examples</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -435,63 +435,66 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article toc2 toc-right">
+<body id="examples" class="article toc2 toc-right">
 <div id="header">
-<h1>Release notes</h1>
+<h1>Configuration examples</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#version_4_0">Version 4.0</a></li>
-<li><a href="#version_3_0">Version 3.0</a></li>
+<li><a href="#single_tenant">Single Tenant</a></li>
+<li><a href="#multi_tenant">Multi Tenant</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="version_4_0"><a class="link" href="#version_4_0">Version 4.0</a></h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Upgraded to XP8.</p>
+<p>Below are some examples of how you can configure the application.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="version_3_0"><a class="link" href="#version_3_0">Version 3.0</a></h2>
+<h2 id="single_tenant"><a class="link" href="#single_tenant">Single Tenant</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This is the first version of the Microsoft Entra OpenID Connect ID Provider app, but since it is a replacement of the previous Azure ID Provider app, it is released as version 3.0.</p>
+<p>Example configuration using Single Directory (Tenant)</p>
 </div>
+<div class="listingblock">
+<div class="title">com.enonic.app.entraidprovider.cfg:</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">autoinit=true
+idprovider.entra.oidcWellKnownEndpoint=https://login.microsoftonline.com/12345678-1234-1234-1234-123456789abc/v2.0/.well-known/openid-configuration
+idprovider.entra.clientId=********
+idprovider.entra.clientSecret=********
+idprovider.entra.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="multi_tenant"><a class="link" href="#multi_tenant">Multi Tenant</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>A migration guide from Azure ID Provider can be found <a href="migration.ahtml#migration">here</a>.</p>
+<p>Example configuration using Single Directory (Tenant)</p>
 </div>
-<div class="paragraph">
-<p>What&#8217;s new in version 3 (compared to Azure AD OIDC ID Provider)</p>
+<div class="listingblock">
+<div class="title">com.enonic.app.entraidprovider.cfg:</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">autoinit=true
+idprovider.entra.oidcWellKnownEndpoint=https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration
+idprovider.entra.clientId=********
+idprovider.entra.clientSecret=********
+idprovider.entra.mappings.displayName=@@{userinfo.given_name} @@{userinfo.family_name}
+idprovider.entra.rules.allowedTenants=12345678-1234-1234-1234-123456789abc 87654321-4321-4321-4321-cba987654321</code></pre>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Auto login with JWT Bearer token support</p>
-</li>
-<li>
-<p>multi-tenant organization configuration support</p>
-</li>
-<li>
-<p>new Redirect URI with deep linking support</p>
-</li>
-<li>
-<p>Authorization Code Flow with PKCE support</p>
-</li>
-<li>
-<p>clientSecret rotation support to avoid downtime from propagation delays</p>
-</li>
-</ul>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-22 12:41:09 UTC
+Last updated 2026-07-22 12:41:42 UTC
 </div>
 </div>
 </body>

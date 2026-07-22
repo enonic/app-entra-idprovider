@@ -441,20 +441,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#version_4_0">Version 4.0</a></li>
 <li><a href="#version_3_0">Version 3.0</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="version_4_0"><a class="link" href="#version_4_0">Version 4.0</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Upgraded to XP8.</p>
-</div>
-</div>
-</div>
 <div class="sect1">
 <h2 id="version_3_0"><a class="link" href="#version_3_0">Version 3.0</a></h2>
 <div class="sectionbody">
@@ -491,7 +482,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-22 12:41:09 UTC
+Last updated 2026-07-22 12:41:42 UTC
 </div>
 </div>
 </body>

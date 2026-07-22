@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.26">
-<title>Release notes</title>
+<title>Usage</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,61 +437,195 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-right">
 <div id="header">
-<h1>Release notes</h1>
+<h1>Usage</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#version_4_0">Version 4.0</a></li>
-<li><a href="#version_3_0">Version 3.0</a></li>
+<li><a href="#oidc_server">OIDC server</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#configure">Configure</a>
+<ul class="sectlevel2">
+<li><a href="#manual_setup">Manual setup</a></li>
+</ul>
+</li>
+<li><a href="#mapping">Mapping</a>
+<ul class="sectlevel2">
+<li><a href="#ingress">Ingress</a></li>
+<li><a href="#vhost">Vhost</a></li>
+</ul>
+</li>
+<li><a href="#redirectcallback_uri">Redirect/Callback URI</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="version_4_0"><a class="link" href="#version_4_0">Version 4.0</a></h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Upgraded to XP8.</p>
+<p>Follow these steps to start using the ID provider</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="version_3_0"><a class="link" href="#version_3_0">Version 3.0</a></h2>
+<h2 id="oidc_server"><a class="link" href="#oidc_server">OIDC server</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This is the first version of the Microsoft Entra OpenID Connect ID Provider app, but since it is a replacement of the previous Azure ID Provider app, it is released as version 3.0.</p>
+<p>You will need access to an OIDC server. This provider is customized to work best with Microsoft Entra ID OIDC Server.</p>
 </div>
 <div class="paragraph">
-<p>A migration guide from Azure ID Provider can be found <a href="migration.ahtml#migration">here</a>.</p>
-</div>
-<div class="paragraph">
-<p>What&#8217;s new in version 3 (compared to Azure AD OIDC ID Provider)</p>
+<p>For your respective provider you will typically need to create a Client or application that will represent the Enonic integration. Typical values you will need later from this setup are typically:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Auto login with JWT Bearer token support</p>
+<p>Client ID</p>
 </li>
 <li>
-<p>multi-tenant organization configuration support</p>
+<p>Client secret</p>
 </li>
 <li>
-<p>new Redirect URI with deep linking support</p>
-</li>
-<li>
-<p>Authorization Code Flow with PKCE support</p>
-</li>
-<li>
-<p>clientSecret rotation support to avoid downtime from propagation delays</p>
+<p>Issuer Identifier (URL)</p>
 </li>
 </ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="installation"><a class="link" href="#installation">Installation</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On your Enonic server, start by installing the application to your Enonic instance. It is <a href="https://market.enonic.com/vendors/enonic/oidc-id-provider">available on Enonic Market</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configure"><a class="link" href="#configure">Configure</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Secondly, the application requires a detailed configuration in order to communicate with the Microsoft Entra ID OIDC server. Create a and tune a configuration file called <code>com.enonic.app.entraidprovider.cfg</code> and add it to your XP instance.</p>
+</div>
+<div class="paragraph">
+<p>Full details on how to configure the application is described in <a href="config.ahtml#configuration">the configuration chapter</a>.</p>
+</div>
+<div class="paragraph">
+<p>You may also find our <a href="examples.ahtml#examples">configuration examples</a> useful.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Your Enonic ID provider should automatically be created once you add your configuration file
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="manual_setup"><a class="link" href="#manual_setup">Manual setup</a></h3>
+<div class="paragraph">
+<p>If you disable <code>autoInit</code>, the ID providers may manually be created by following these steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>From Enonic admin console: <code>XP menu</code> &#8594; <code>Users</code> &#8594; <code>New</code> &#8594; <code>ID provider</code> <a href="https://www.youtube.com/watch?v=QZpBdsDlkA0">admin tool "Users"</a></p>
+</li>
+<li>
+<p>Fill in the <code>displayName</code> field, which generates the <strong>ID provider name</strong> just below</p>
+<div class="paragraph">
+<p><span class="image"><img src="media/idprovider-name.png" alt="idprovider name" width="500px" title="ID provider name is found/set in the name field below the displayName"></span></p>
+</div>
+<div class="paragraph">
+<p>The ID provider name cannot be changed later, so choose wisely before saving.</p>
+</div>
+</li>
+<li>
+<p>For the "Application" field, select the "Entra ID Provider" app you installed earlier.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mapping"><a class="link" href="#mapping">Mapping</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Finally, you will need to map the ID provider to an Enonic ingress/vhost where it will be used - i.e. to enable login for the XP admin console, a website or an API.</p>
+</div>
+<div class="sect2">
+<h3 id="ingress"><a class="link" href="#ingress">Ingress</a></h3>
+<div class="paragraph">
+<p>When using the self-service cloud, simply edit the Ingress, then select the ID provider you created above i.e. <code>myoidcprovider</code>.</p>
+</div>
+<div class="paragraph">
+<p>Save, and the change should take effect shortly.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="vhost"><a class="link" href="#vhost">Vhost</a></h3>
+<div class="paragraph">
+<p>To manually configure the ID provider on your XP instance, you will need a vhost definition.</p>
+</div>
+<div class="paragraph">
+<p>Edit the XP configuration file <code>com.enonic.xp.web.vhost.cfg</code>, and map the id provider to your vhost.</p>
+</div>
+<div class="paragraph">
+<p>(See <a href="https://developer.enonic.com/docs/xp/stable/deployment/vhosts">Virtual Host Configuration</a> for more information).</p>
+</div>
+<div class="listingblock">
+<div class="title">Example vhost mapping for Admin console</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">mapping.example.host = xp.example.com
+mapping.example.source = /
+mapping.example.target = /admin
+mapping.example.idProvider.myentraprovider = default</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>myentraprovider</code> in the example above must match the name you used in the ID provider configuration.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="redirectcallback_uri"><a class="link" href="#redirectcallback_uri">Redirect/Callback URI</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Finally, if you want to use form-based authenticated (aka Authorization Code Flow), End-Users will be redirected back to your Enonic endpoint from the authorization server. For security reasons you will need to register this URL in the configuration of your OIDC providers Client/Application.</p>
+</div>
+<div class="paragraph">
+<p>The callback URL depends on your Enonic Vhost/Ingress and the name of the ID Provider you want to use. It typically has the following format: <code>[host+sourcepath]/_/idprovider/[idprovidername]</code>, where <code>idprovidername</code> must match the ID provider registered in Enonic XP.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Example for a site</dt>
+<dd>
+<p><a href="https://xp.example.com/_/idprovider/myoidcprovider" class="bare">https://xp.example.com/_/idprovider/myoidcprovider</a></p>
+</dd>
+<dt class="hdlist1">Example for admin</dt>
+<dd>
+<p><a href="https://www.example.com/admin/_/idprovider/myoidcprovider" class="bare">https://www.example.com/admin/_/idprovider/myoidcprovider</a></p>
+</dd>
+</dl>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-22 12:41:09 UTC
+Last updated 2026-07-22 12:41:42 UTC
 </div>
 </div>
 </body>
