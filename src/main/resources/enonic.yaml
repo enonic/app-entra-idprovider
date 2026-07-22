@@ -1,0 +1,5 @@
+kind: "Application"
+title: "Entra ID Provider"
+description: "Microsoft Entra OpenID Connect ID Provider"
+vendorName: "Enonic AS"
+vendorUrl: "https://enonic.com"

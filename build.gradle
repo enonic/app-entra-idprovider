@@ -2,28 +2,20 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.6'
-    id 'com.enonic.xp.app' version '3.6.2'
-}
-
-app {
-    name = "${appName}"
-    displayName = "${appDisplayName}"
-    vendorName = "${vendorName}"
-    vendorUrl = "${vendorUrl}"
-    systemVersion = "${xpVersion}"
+    id 'com.enonic.xp.app'
 }
 
 dependencies {
-    implementation "com.enonic.xp:core-api:${xpVersion}"
-    implementation "com.enonic.xp:portal-api:${xpVersion}"
-    implementation "com.enonic.xp:web-api:${xpVersion}"
-    include "com.enonic.xp:lib-auth:${xpVersion}"
-    include "com.enonic.xp:lib-common:${xpVersion}"
-    include "com.enonic.xp:lib-context:${xpVersion}"
-    include "com.enonic.xp:lib-portal:${xpVersion}"
-    include "com.enonic.xp:lib-cluster:${xpVersion}"
-    include "com.enonic.xp:lib-event:${xpVersion}"
-    include "com.enonic.lib:lib-http-client:3.2.2"
+    implementation xplibs.api.core
+    implementation xplibs.api.portal
+    implementation xplibs.api.web
+    include xplibs.auth
+    include xplibs.common
+    include xplibs.context
+    include xplibs.portal
+    include xplibs.cluster
+    include xplibs.event
+    include "com.enonic.lib:lib-http-client:4.0.0"
 
     include 'com.auth0:java-jwt:4.5.0'
     include 'com.auth0:jwks-rsa:0.23.0'
@@ -37,12 +29,6 @@ dependencies {
 repositories {
     mavenCentral()
     xp.enonicRepo('dev')
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
 }
 
 test {

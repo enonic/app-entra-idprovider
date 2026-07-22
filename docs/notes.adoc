@@ -1,6 +1,10 @@
 = Release notes
 :imagesdir: media/
 
+== Version 4.0
+
+Upgraded to XP8.
+
 == Version 3.0
 
 This is the first version of the Microsoft Entra OpenID Connect ID Provider app, but since it is a replacement of the previous Azure ID Provider app, it is released as version 3.0.
